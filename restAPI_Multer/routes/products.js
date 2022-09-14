@@ -3,15 +3,15 @@ const contenedor = require('../src/contenedor.js').Contenedor
 const router = Router()
 const manager = new contenedor("./src/file.txt")
 
-const dataPostingValidation = (req,res,next) => {
-    const allKeys = ['title', 'price', 'thumbnail'] 
-    const confirmation = allKeys.every(item => req.body[item] !== '');    
-    if (confirmation){
-        next()
-        return
-    }
-    res.send("All fields must be completed")
+globalMiddleware = (req,res,next) => {
+    console.log("WORKING")
+    next()
+
 }
+
+router.get('/prueba', globalMiddleware, (req,res) => {
+    res.send('llegue')
+})
 
 router.get('/all', async (req,res) => {
     const prods = await manager.getAll()
@@ -30,7 +30,7 @@ router.get('/:id', async (req,res) => {
     }
 })
 
-router.post('/add', dataPostingValidation, async (req,res) => {
+router.post('/add', async (req,res) => {
     await manager.readContent()
     const newProductID = await manager.save(req.body)
     return res.status(200).json({createdID: newProductID})
@@ -67,5 +67,4 @@ router.delete('/delete/:id', async (req,res) => {
     }
 
 })
-
 module.exports = router

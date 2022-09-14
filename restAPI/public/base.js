@@ -1,1 +1,1 @@
-alert('ojo')
+console.log("Estás en el index")
