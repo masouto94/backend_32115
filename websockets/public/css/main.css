@@ -1,0 +1,10 @@
+#mensajes{
+    display: flex;
+    justify-content: flex-start;
+}
+#lista{
+    list-style: none;
+}
+#lista>li{
+    margin-bottom: 10px;
+}
