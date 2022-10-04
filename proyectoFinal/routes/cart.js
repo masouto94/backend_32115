@@ -1,7 +1,9 @@
-const {Router} = require('express')
+const express = require('express')
 const contenedor = require('../src/model/contenedor.js').Contenedor
-const cartRouter = Router()
+const cartRouter = express.Router()
 const manager = new contenedor("./src/products/products.txt")
+cartRouter.use(express.json())
+cartRouter.use(express.urlencoded({extended:true}))
 
 const dataPostingValidation = (req,res,next) => {
     const allKeys = ['title', 'price', 'thumbnail'] 
@@ -15,16 +17,16 @@ const dataPostingValidation = (req,res,next) => {
 
 cartRouter.post('/create', async (req,res) => {
     let cart= await manager.createCart()
-    return res.status(200).json({cartId: cart})
+    console.log({cartId: cart})
+    return res.redirect('/')
 })
 
 cartRouter.get('/:id', async (req,res) => {
     const {id} = req.params
-    await manager.readContent()
 
     try {
-        const product = await manager.getById(parseInt(id))
-        res.status(200).json({product})
+        const cart = await manager.getCartByID(id)
+        res.status(200).json({cart})
     } catch (e) {
         return res.status(404).json({error:e.message})
     }

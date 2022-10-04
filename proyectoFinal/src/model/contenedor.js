@@ -95,7 +95,7 @@ class Contenedor {
     
      deleteAll = async () =>{
         try{
-        await fs.promises.writeFile(this.file, "")
+        await fs.promises.writeFile(this.file, "[]")
         .then(()=> console.log("Se borro todo"))
         .then(()=>{
             this.products_list=[]
@@ -106,10 +106,20 @@ class Contenedor {
         }
     }
     createCart = async () => {
-        let fullRoute = 'src/carts/cart.txt'
-        await fs.promises.writeFile(fullRoute,JSON.stringify({cartID:this._cartUid, products:this.products_list}))
+        let fullRoute = `src/carts/cart_${this._cartUid}.txt`
+        let allProducts = await this.getAll()
+        await fs.promises.writeFile(fullRoute,JSON.stringify({cartID:this._cartUid, products: allProducts}))
         this._cartUid++
         return this._cartUid-1
+    }
+    getCartByID = async (id) => {
+        let fullRoute = `src/carts/cart_${id}.txt`
+        try {
+            let cart = await fs.promises.readFile(fullRoute).then(elem =>JSON.parse(elem))
+            return cart
+        } catch (error) {
+            return `Cart with ID: ${id} not found`
+        }
     }
 }
 

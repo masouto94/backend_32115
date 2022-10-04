@@ -32,10 +32,11 @@ productRouter.get('/:id', async (req,res) => {
     }
 })
 
-productRouter.post('/add',  async (req,res) => {
+productRouter.post('/add', dataPostingValidation, async (req,res) => {
     await manager.readContent()
     const newProductID = await manager.save(req.body)
-    return res.status(200).json({createdID: newProductID})
+    console.log({createdID: newProductID})
+    return res.redirect('/')
 })
 
 productRouter.put('/update/:id', async (req,res) => {
@@ -70,4 +71,15 @@ productRouter.delete('/delete/:id', async (req,res) => {
 
 })
 
+productRouter.delete('/deleteAll', async (req,res) => {
+
+    try {
+        await manager.deleteAll()
+
+        return res.status(200).send(`Deleted all`)
+    } catch (e) {
+        return res.status(404).json({error:e.message})
+    }
+
+})
 module.exports = productRouter
