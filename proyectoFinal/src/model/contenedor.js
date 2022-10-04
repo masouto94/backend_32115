@@ -5,6 +5,7 @@ class Contenedor {
         this.products_list=[]
         this.file=file
         this._uid=0
+        this._cartUid=0
     }
 
     readContent = async () =>  {
@@ -103,6 +104,12 @@ class Contenedor {
         }catch (err){
             console.log(`No se pudieron borrar los elementos del archivo`)
         }
+    }
+    createCart = async () => {
+        let fullRoute = 'src/carts/cart.txt'
+        await fs.promises.writeFile(fullRoute,JSON.stringify({cartID:this._cartUid, products:this.products_list}))
+        this._cartUid++
+        return this._cartUid-1
     }
 }
 
