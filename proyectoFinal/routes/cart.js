@@ -15,21 +15,32 @@ cartRouter.post('/create', async (req,res) => {
         return res.status(401).send('Cant create empty cart')
     }
     let cart= await manager.createCart()
-    console.log({cartId: cart})
-    return res.redirect('/')
+    return res.redirect(`/?cartID=${cart}`)
 })
 
-cartRouter.get('/:id', async (req,res) => {
+cartRouter.get('/:id/products', async (req,res) => {
     const {id} = req.params
 
     try {
-        const cart = await manager.getCartByID(id)
+        const cart = await manager.getCartById(id)
         res.status(200).json({cart})
     } catch (e) {
         return res.status(404).json({error:e.message})
     }
 })
 
+cartRouter.post('/:id/products/:productID', async (req,res) => {
+    const {id} = req.params
+    const {productID} = req.params
+    await manager.readContent()
+    try {
+        const newCart = await manager.addProductToCart(parseInt(id), parseInt(productID))
+        console.log(newCart)
+        res.status(200).json({newCart})
+    } catch (e) {
+        return res.status(404).json({error:e.message})
+    }
+})
 
 
 cartRouter.put('/update/:id', async (req,res) => {

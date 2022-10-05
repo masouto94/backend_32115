@@ -9,7 +9,7 @@ const confirm_update = (event, msj) => {
 }
 
 let createCartButton = document.querySelector('#createCart')
-createCartButton.addEventListener('submit', (e) => {
+createCartButton.addEventListener('submit', async (e) => {
     confirm_update(e, "Queres crear un carrito?")
 })
 
@@ -59,5 +59,16 @@ putRequestForm.addEventListener('submit', async (e) =>{
     };
 
     await fetch("/api/products/update/"+idToUpdate.value, requestOptions)
+    e.target.reset()
+})
+
+let addProductToCartForm = document.querySelector('#addProductToCart')
+addProductToCartForm.addEventListener('submit', async (e) =>{
+    e.preventDefault()
+    let cartIDToUpdate= document.querySelector('#cartID').value
+    let productIDToAdd= document.querySelector('#productID').value
+    await fetch("/api/cart/"+cartIDToUpdate+"/products/"+productIDToAdd, {
+        method:"POST"
+    })
     e.target.reset()
 })

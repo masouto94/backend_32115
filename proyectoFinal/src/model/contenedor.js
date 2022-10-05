@@ -117,7 +117,7 @@ class Contenedor {
         this._cartUid++
         return this._cartUid-1
     }
-    getCartByID = async (id) => {
+    getCartById = async (id) => {
         let fullRoute = `src/carts/cart_${id}.txt`
         try {
             let cart = await fs.promises.readFile(fullRoute).then(elem =>JSON.parse(elem))
@@ -125,6 +125,13 @@ class Contenedor {
         } catch (error) {
             return `Cart with ID: ${id} not found`
         }
+    }
+    addProductToCart = async (id,productId) => {
+        const currentCart = await this.getCartById(id)
+        const newProduct = await this.getById(productId)
+        currentCart.products.push(newProduct)
+        await fs.promises.writeFile(`src/carts/cart_${id}.txt`,JSON.stringify(currentCart))
+        return currentCart
     }
 }
 
