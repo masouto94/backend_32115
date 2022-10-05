@@ -12,16 +12,17 @@ const dataPostingValidation = (req,res,next) => {
         next()
         return
     }
-    res.send("All fields must be completed")
+    res.status(401).send("All fields must be completed")
 }
 const dataUpdatingValidation = (req,res,next) => {
+    let reqObject = req.body.formEntriesValues
     const anyKey = ['code','title', 'price', 'thumbnail'] 
-    const confirmation = anyKey.some(item => req.body[item]);
+    const confirmation = anyKey.some(item => reqObject[item]);
     if (confirmation){
         next()
         return
     }
-    res.send("All fields must be completed")
+    res.status(401).send("At least a field must be completed")
 }
 
 productRouter.get('/all', async (req,res) => {
@@ -48,17 +49,17 @@ productRouter.post('/add', dataPostingValidation, async (req,res) => {
     return res.redirect('/')
 })
 
-productRouter.put('/update/:id', dataUpdatingValidation, async (req,res) => {
+productRouter.put('/update/:id',dataUpdatingValidation, async (req,res) => {
     const {id} = req.params
     await manager.readContent()
     
     try {
         const product = await manager.getById(parseInt(id))
-        await manager.update(parseInt(id), req.body)
+        await manager.update(parseInt(id), req.body.formEntriesValues)
         res.status(200).json(
             {
-                "before":product,
-                "after":req.body 
+                "original":product,
+                "updated":req.body.formEntriesValues
             }
         )
     } catch (e) {
@@ -68,7 +69,6 @@ productRouter.put('/update/:id', dataUpdatingValidation, async (req,res) => {
 
 productRouter.delete('/delete/:id', async (req,res) => {
     const {id} = req.params
-    console.log(id)
     await manager.readContent()
 
     try {
