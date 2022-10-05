@@ -30,6 +30,7 @@ class Contenedor {
     save = async (producto) => {
         this._uid++
         producto.id =this._uid
+        producto.timestamp = Date.now()
         this.products_list.push(producto)
         try{
             await fs.promises.writeFile(this.file,JSON.stringify(this.products_list))
@@ -108,7 +109,11 @@ class Contenedor {
     createCart = async () => {
         let fullRoute = `src/carts/cart_${this._cartUid}.txt`
         let allProducts = await this.getAll()
-        await fs.promises.writeFile(fullRoute,JSON.stringify({cartID:this._cartUid, products: allProducts}))
+        await fs.promises.writeFile(fullRoute,JSON.stringify({
+            cartID:this._cartUid,
+            cartTimestamp: Date.now(),
+            products: allProducts
+        }))
         this._cartUid++
         return this._cartUid-1
     }

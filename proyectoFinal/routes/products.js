@@ -6,8 +6,17 @@ productRouter.use(express.json())
 productRouter.use(express.urlencoded({extended:true}))
 
 const dataPostingValidation = (req,res,next) => {
-    const allKeys = ['title', 'price', 'thumbnail'] 
+    const allKeys = ['code','title', 'price', 'thumbnail'] 
     const confirmation = allKeys.every(item => req.body[item] !== '');    
+    if (confirmation){
+        next()
+        return
+    }
+    res.send("All fields must be completed")
+}
+const dataUpdatingValidation = (req,res,next) => {
+    const anyKey = ['code','title', 'price', 'thumbnail'] 
+    const confirmation = anyKey.some(item => req.body[item]);
     if (confirmation){
         next()
         return
@@ -39,7 +48,7 @@ productRouter.post('/add', dataPostingValidation, async (req,res) => {
     return res.redirect('/')
 })
 
-productRouter.put('/update/:id', async (req,res) => {
+productRouter.put('/update/:id', dataUpdatingValidation, async (req,res) => {
     const {id} = req.params
     await manager.readContent()
     
@@ -59,6 +68,7 @@ productRouter.put('/update/:id', async (req,res) => {
 
 productRouter.delete('/delete/:id', async (req,res) => {
     const {id} = req.params
+    console.log(id)
     await manager.readContent()
 
     try {

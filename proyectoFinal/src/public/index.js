@@ -17,3 +17,22 @@ deleteAll.addEventListener('click', async ()=>{
     })
     alert("Se borro todo")
 })
+
+let deleteByID = document.querySelector('#deleteByID')
+deleteByID.addEventListener('submit', async (e)=>{
+    e.preventDefault()
+    console.log("#################################")
+    let idToDelete= document.querySelector('#idDelete').value
+    console.log(idToDelete)
+    await fetch('/api/products/delete/'+idToDelete,{
+        method:"DELETE",
+
+    })
+    alert(`Se borro elemento con id ${idToDelete}`)
+})
+
+let putRequestInputs = ["modifyCode", "modifyTitle", "modifyPrice", "modifyThumbnail"]
+let putRequestForm = document.querySelector('#modifyForm')
+putRequestForm.addEventListener('submit', async (req) =>{
+    console.log(req)
+})

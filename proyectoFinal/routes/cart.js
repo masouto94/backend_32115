@@ -5,17 +5,15 @@ const manager = new contenedor("./src/products/products.txt")
 cartRouter.use(express.json())
 cartRouter.use(express.urlencoded({extended:true}))
 
-const dataPostingValidation = (req,res,next) => {
-    const allKeys = ['title', 'price', 'thumbnail'] 
-    const confirmation = allKeys.every(item => req.body[item] !== '');    
-    if (confirmation){
-        next()
-        return
-    }
-    res.send("All fields must be completed")
-}
+
 
 cartRouter.post('/create', async (req,res) => {
+    const toAdd = await manager.readContent()
+    
+    console.log(req.body)
+    if(toAdd.length === 0){
+        return res.status(401).send('Cant create empty cart')
+    }
     let cart= await manager.createCart()
     console.log({cartId: cart})
     return res.redirect('/')
@@ -32,11 +30,7 @@ cartRouter.get('/:id', async (req,res) => {
     }
 })
 
-cartRouter.post('/add', dataPostingValidation, async (req,res) => {
-    await manager.readContent()
-    const newProductID = await manager.save(req.body)
-    return res.status(200).json({createdID: newProductID})
-})
+
 
 cartRouter.put('/update/:id', async (req,res) => {
     const {id} = req.params
