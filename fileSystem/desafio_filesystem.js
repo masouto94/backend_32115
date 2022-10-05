@@ -50,7 +50,7 @@ class Contenedor {
         return  allProducts
     }
 
-    deleteByID = async (idNum) =>{
+    deleteById = async (idNum) =>{
         try{
             const products = await this.readContent()
             const filtered_products = products.filter(elem => elem.id !== idNum)

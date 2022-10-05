@@ -6,7 +6,7 @@ productRouter.use(express.json())
 productRouter.use(express.urlencoded({extended:true}))
 
 const dataPostingValidation = (req,res,next) => {
-    const allKeys = ['code','title', 'price', 'thumbnail'] 
+    const allKeys = ['code','title', 'price', 'thumbnail', 'stock'] 
     const confirmation = allKeys.every(item => req.body[item] !== '');    
     if (confirmation){
         next()
@@ -16,7 +16,7 @@ const dataPostingValidation = (req,res,next) => {
 }
 const dataUpdatingValidation = (req,res,next) => {
     let reqObject = req.body.formEntriesValues
-    const anyKey = ['code','title', 'price', 'thumbnail'] 
+    const anyKey = ['code','title', 'price', 'thumbnail', 'stock'] 
     const confirmation = anyKey.some(item => reqObject[item]);
     if (confirmation){
         next()
@@ -44,8 +44,8 @@ productRouter.get('/:id', async (req,res) => {
 
 productRouter.post('/add', dataPostingValidation, async (req,res) => {
     await manager.readContent()
-    const newProductID = await manager.save(req.body)
-    console.log({createdID: newProductID})
+    const newProductId = await manager.save(req.body)
+    console.log({createdId: newProductId})
     return res.redirect('/')
 })
 
@@ -73,7 +73,7 @@ productRouter.delete('/delete/:id', async (req,res) => {
 
     try {
         const product = await manager.getById(parseInt(id))
-        await manager.deleteByID(product.id)
+        await manager.deleteById(product.id)
         return res.status(200).send(`Deleted product with id ${id}`)
     } catch (e) {
         return res.status(404).json({error:e.message})

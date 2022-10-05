@@ -4,6 +4,8 @@ const app = express()
 const productRoutes = require('./routes/products.js')
 const cartRoutes = require('./routes/cart.js')
 const contenedor = require('./src/model/contenedor.js').Contenedor
+const isAdmin = true
+ 
 app.use('/api/products', productRoutes)
 app.use('/api/cart', cartRoutes)
 app.use(express.json())

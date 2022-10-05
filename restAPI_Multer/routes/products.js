@@ -32,8 +32,8 @@ router.get('/:id', async (req,res) => {
 
 router.post('/add', async (req,res) => {
     await manager.readContent()
-    const newProductID = await manager.save(req.body)
-    return res.status(200).json({createdID: newProductID})
+    const newProductId = await manager.save(req.body)
+    return res.status(200).json({createdId: newProductId})
 })
 
 router.put('/update/:id', async (req,res) => {
@@ -60,7 +60,7 @@ router.delete('/delete/:id', async (req,res) => {
 
     try {
         const product = await manager.getById(parseInt(id))
-        await manager.deleteByID(product.id)
+        await manager.deleteById(product.id)
         return res.status(200).send(`Deleted product with id ${id}`)
     } catch (e) {
         return res.status(404).json({error:e.message})

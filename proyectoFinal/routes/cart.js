@@ -15,7 +15,7 @@ cartRouter.post('/create', async (req,res) => {
         return res.status(401).send('Cant create empty cart')
     }
     let cart= await manager.createCart()
-    return res.redirect(`/?cartID=${cart}`)
+    return res.redirect(`/?cartId=${cart}`)
 })
 
 cartRouter.get('/:id/products', async (req,res) => {
@@ -29,12 +29,12 @@ cartRouter.get('/:id/products', async (req,res) => {
     }
 })
 
-cartRouter.post('/:id/products/:productID', async (req,res) => {
+cartRouter.post('/:id/products/:productId', async (req,res) => {
     const {id} = req.params
-    const {productID} = req.params
+    const {productId} = req.params
     await manager.readContent()
     try {
-        const newCart = await manager.addProductToCart(parseInt(id), parseInt(productID))
+        const newCart = await manager.addProductToCart(parseInt(id), parseInt(productId))
         console.log(newCart)
         res.status(200).json({newCart})
     } catch (e) {
@@ -63,12 +63,22 @@ cartRouter.put('/update/:id', async (req,res) => {
 
 cartRouter.delete('/delete/:id', async (req,res) => {
     const {id} = req.params
-    await manager.readContent()
 
     try {
-        const product = await manager.getById(parseInt(id))
-        await manager.deleteByID(product.id)
-        return res.status(200).send(`Deleted product with id ${id}`)
+        const toDelete = await manager.deleteCartById(parseInt(id))
+        return res.status(200).send(toDelete)
+    } catch (e) {
+        return res.status(404).json({error:e.message})
+    }
+
+})
+
+cartRouter.delete('/:id/products/:productId', async (req,res) => {
+    const {id} = req.params
+    const {productId} = req.params
+    try {
+        const productToDelete = await manager.deleteProductFromCart(parseInt(id),parseInt(productId))
+        return res.status(200).send(productToDelete)
     } catch (e) {
         return res.status(404).json({error:e.message})
     }

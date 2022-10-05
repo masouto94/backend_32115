@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IdxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <title>Proyecto final</title>
 </head>
 
@@ -21,26 +21,28 @@
         <input class="form-control" type="text" name="title" id="addTitle" placeholder="title">
         <input class="form-control" type="number" name="price" id="addPrice" placeholder="price">
         <input class="form-control" type="text" name="thumbnail" id="addThumbnail" placeholder="thumbnail">
+        <input class="form-control" type="text" name="stock" id="addstock" placeholder="stock">
         <input class="form-control" type="submit" value="Create product">
       </form>
     </div>
     <div class="m-3 row">
       <h3>Actualizar producto</h3>
       <form action="" class="form" id="modifyForm">
-        <input class="form-control" type="number" name="id" id="modifyID" placeholder="id" required>
+        <input class="form-control" type="number" name="id" id="modifyId" placeholder="id" required>
         <input class="form-control" type="text" name="code" id="modifyCode" placeholder="code">
         <input class="form-control" type="text" name="title" id="modifyTitle" placeholder="title">
         <input class="form-control" type="number" name="price" id="modifyPrice" placeholder="price">
         <input class="form-control" type="text" name="thumbnail" id="modifyThumbnail" placeholder="thumbnail">
+        <input class="form-control" type="text" name="stock" id="modifystock" placeholder="stock">
         <input class="form-control" type="submit" value="Modify product">
       </form>
     </div>
     <div class="m-3 start-0">
       <h3>Borrado de productos</h3>
       <div class="m-3 start-0">
-        <form action="" class="form" method="" id="deleteByID">
+        <form action="" class="form" method="" id="deleteById">
           <input class="form-control" type="number" name="idDelete" id="idDelete">
-          <input class="form-control" type="submit" value="Borrar por ID">
+          <input class="form-control" type="submit" value="Borrar por Id">
         </form>
       </div>
     </div>
@@ -60,17 +62,27 @@
     <div class="m-3 row">
       <h3>Agregar productos a cart</h3>
       <form action="" method="" class="form" id="addProductToCart">
-        <input class="form-control" type="text" name="cartID" id="cartID" placeholder="cartID" required>
-        <input class="form-control" type="text" name="productID" id="productID" placeholder="productID" required>
+        <input class="form-control" type="text" name="cartId" id="cartId" placeholder="cartId" required>
+        <input class="form-control" type="text" name="productId" id="productId" placeholder="productId" required>
         <input class="form-control" type="submit" value="Add product to cart">
       </form>
     </div>
     <div class="m-3 start-0">
       <h3>Borrado de cart</h3>
       <div class="m-3 start-0">
-        <form action="" class="form" method="" id="deleteByCartID">
-          <input class="form-control" type="number" name="idDelete" id="idDelete">
-          <input class="form-control" type="submit" value="Borrar por ID">
+        <form action="" class="form" method="" id="deleteByCartId">
+          <input class="form-control" type="number" name="idDelete" id="cartIdToDelete" placeholder="cartIdToDelete">
+          <input class="form-control" type="submit" value="Borrar por Id">
+        </form>
+      </div>
+    </div>
+    <div class="m-3 start-0">
+      <h3>Borrado de producto de cart</h3>
+      <div class="m-3 start-0">
+        <form action="" class="form" method="" id="deleteProductFromCart">
+          <input class="form-control" type="number" name="idDelete" id="deleteProductFromCartCartId" placeholder="deleteProductFromCartCartId">
+          <input class="form-control" type="number" name="idDelete" id="deleteProductFromCartProductId" placeholder="deleteProductFromCartProductId">
+          <input class="form-control" type="submit" value="Borrar por Id">
         </form>
       </div>
     </div>

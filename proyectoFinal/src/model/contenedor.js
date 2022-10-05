@@ -69,7 +69,7 @@ class Contenedor {
         
         const foundObject = this.products_list.filter(elem => elem.id === idNum)
         if(foundObject.length === 0){
-            throw new Error(`ID ${idNum} not found`)
+            throw new Error(`Id ${idNum} not found`)
         } 
         return foundObject[0]
         
@@ -80,7 +80,7 @@ class Contenedor {
         return  allProducts
     }
 
-    deleteByID = async (idNum) =>{
+    deleteById = async (idNum) =>{
         try{
             const products = await this.readContent()
             const filtered_products = products.filter(elem => elem.id !== idNum)
@@ -110,7 +110,7 @@ class Contenedor {
         let fullRoute = `src/carts/cart_${this._cartUid}.txt`
         let allProducts = await this.getAll()
         await fs.promises.writeFile(fullRoute,JSON.stringify({
-            cartID:this._cartUid,
+            cartId:this._cartUid,
             cartTimestamp: Date.now(),
             products: allProducts
         }))
@@ -123,7 +123,7 @@ class Contenedor {
             let cart = await fs.promises.readFile(fullRoute).then(elem =>JSON.parse(elem))
             return cart
         } catch (error) {
-            return `Cart with ID: ${id} not found`
+            return `Cart with Id: ${id} not found`
         }
     }
     addProductToCart = async (id,productId) => {
@@ -132,6 +132,25 @@ class Contenedor {
         currentCart.products.push(newProduct)
         await fs.promises.writeFile(`src/carts/cart_${id}.txt`,JSON.stringify(currentCart))
         return currentCart
+    }
+    deleteCartById = async (id) => {
+        try{
+            await fs.promises.unlink(`src/carts/cart_${id}.txt`)
+            return `Se borró cart con id ${id}`
+        }catch (err){
+            console.log(`No se pudo borrar el cart con id: ${id}`)
+        }
+    }
+    deleteProductFromCart = async (id, productId) => {
+        try{
+            const currentCart = await this.getCartById(id)
+            const filteredProducts = currentCart.products.filter(prod => prod.id !== productId)
+            currentCart.products = filteredProducts
+            await fs.promises.writeFile(`src/carts/cart_${id}.txt`, JSON.stringify(currentCart))
+            return `Se borró el producto con id: ${productId} del cart ${id}`
+        }catch (err){
+            console.log(`No se pudo borrar el cart con id: ${id}`)
+        }
     }
 }
 

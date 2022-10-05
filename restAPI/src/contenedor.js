@@ -67,7 +67,7 @@ class Contenedor {
         
         const foundObject = this.products_list.filter(elem => elem.id === idNum)
         if(foundObject.length === 0){
-            throw new Error(`ID ${idNum} not found`)
+            throw new Error(`Id ${idNum} not found`)
         } 
         return foundObject[0]
         
@@ -78,7 +78,7 @@ class Contenedor {
         return  allProducts
     }
 
-    deleteByID = async (idNum) =>{
+    deleteById = async (idNum) =>{
         try{
             const products = await this.readContent()
             const filtered_products = products.filter(elem => elem.id !== idNum)

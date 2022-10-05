@@ -23,8 +23,8 @@ deleteAll.addEventListener('click', async (e)=>{
     }
 })
 
-let deleteByID = document.querySelector('#deleteByID')
-deleteByID.addEventListener('submit', async (e)=>{
+let deleteById = document.querySelector('#deleteById')
+deleteById.addEventListener('submit', async (e)=>{
     e.preventDefault()
     let idToDelete= document.querySelector('#idDelete')
     console.log(idToDelete)
@@ -38,7 +38,7 @@ deleteByID.addEventListener('submit', async (e)=>{
 let putRequestForm = document.querySelector('#modifyForm')
 putRequestForm.addEventListener('submit', async (e) =>{
     e.preventDefault()
-    let idToUpdate= document.querySelector('#modifyID')
+    let idToUpdate= document.querySelector('#modifyId')
     console.log(idToUpdate)
 
     let myHeaders = new Headers();
@@ -65,10 +65,36 @@ putRequestForm.addEventListener('submit', async (e) =>{
 let addProductToCartForm = document.querySelector('#addProductToCart')
 addProductToCartForm.addEventListener('submit', async (e) =>{
     e.preventDefault()
-    let cartIDToUpdate= document.querySelector('#cartID').value
-    let productIDToAdd= document.querySelector('#productID').value
-    await fetch("/api/cart/"+cartIDToUpdate+"/products/"+productIDToAdd, {
+    let cartIdToUpdate= document.querySelector('#cartId').value
+    let productIdToAdd= document.querySelector('#productId').value
+    await fetch("/api/cart/"+cartIdToUpdate+"/products/"+productIdToAdd, {
         method:"POST"
+    })
+    e.target.reset()
+})
+
+let deleteByCartId = document.querySelector('#deleteByCartId')
+deleteByCartId.addEventListener('submit', async (e)=>{
+    e.preventDefault()
+    let idToDelete= document.querySelector('#cartIdToDelete')
+    console.log(idToDelete.value)
+    await fetch('/api/cart/delete/'+idToDelete.value,{
+        method:"DELETE",
+
+    })
+    e.target.reset()
+})
+
+let deleteProductFromCart = document.querySelector('#deleteProductFromCart')
+deleteProductFromCart.addEventListener('submit', async (e)=>{
+    e.preventDefault()
+    let cartIdToDelete= document.querySelector('#deleteProductFromCartCartId')
+    let productIdToDelete= document.querySelector('#deleteProductFromCartProductId')
+    console.log(cartIdToDelete.value)
+    console.log(productIdToDelete.value)
+    await fetch('/api/cart/'+cartIdToDelete.value+'/products/'+productIdToDelete.value,{
+        method:"DELETE",
+
     })
     e.target.reset()
 })
