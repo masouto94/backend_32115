@@ -11,12 +11,6 @@ class ProductNotFoundError extends Error{
     }
 }
 
-class InvalidAttributeAssingation extends Error{
-    constructor(message){
-        super(message)
-        this.name = this.constructor.name
-    }
-}
 
 class Product{
     constructor(title, code, price, stock, description, thumbnail){
@@ -39,7 +33,6 @@ class ProductManager{
     }
     set products(value){
         this._products = this.validateProductList(value)
-        //throw new InvalidAttributeAssingation("Cannot reassign products outside methods")
     }
     validateProductList(productList){
         if(productList.length === 0){
