@@ -1,6 +1,21 @@
 class ProductAlreadyExistsError extends Error{
+    constructor(message){
+        super(message)
+        this.name = this.constructor.name
+    }
 }
 class ProductNotFoundError extends Error{
+    constructor(message){
+        super(message)
+        this.name = this.constructor.name
+    }
+}
+
+class InvalidAttributeAssingation extends Error{
+    constructor(message){
+        super(message)
+        this.name = this.constructor.name
+    }
 }
 
 class Product{
@@ -16,12 +31,19 @@ class Product{
 
 class ProductManager{
     constructor(products=[]){
-        this.products = this.validateProductList(products)
+        this._products = this.validateProductList(products)
         this._uid = 0
+    }
+    get products(){
+        return this._products
+    }
+    set products(value){
+        this._products = this.validateProductList(value)
+        //throw new InvalidAttributeAssingation("Cannot reassign products outside methods")
     }
     validateProductList(productList){
         if(productList.length === 0){
-            return productList
+            return []
         }
         for(let product of productList){
             if(!(product instanceof Product)){
@@ -34,7 +56,7 @@ class ProductManager{
         return this.products
     }
     getProductById(id){
-        let found = this.products.find(item => item.id == id)
+        const found = this.products.find(item => item.id == id)
         if (!found){
             throw new ProductNotFoundError(`Product with id: ${id} not found in Manager`)
         }
@@ -57,13 +79,13 @@ class ProductManager{
 }
 
 //Products
-let mate = new Product("Mate",0,100,10,"Un mate normal", "photoUrl")
-let mateRepeated = new Product("Mate que no se podria agregar",0,100,10,"Un mate normal", "photoUrl")
-let termo = new Product("Termo",1,200,10,"Un termo normal", "photoUrl")
-let termoStanley = new Product("Termo stanley",2,500,5,"Un termo genial", "photoUrl")
+const mate = new Product("Mate",0,100,10,"Un mate normal", "photoUrl")
+const mateRepeated = new Product("Mate que no se podria agregar",0,100,10,"Un mate normal", "photoUrl")
+const termo = new Product("Termo",1,200,10,"Un termo normal", "photoUrl")
+const termoStanley = new Product("Termo stanley",2,500,5,"Un termo genial", "photoUrl")
 
 //Product Manager
-let productManager = new ProductManager()
+const productManager = new ProductManager()
 
 //Validate only instances of Product can be added. Also check function getProducts()
 try{
@@ -83,6 +105,15 @@ console.log("Product with id 1 =>", productManager.getProductById(1))
 console.log("Product with id 2 =>", productManager.getProductById(2))
 console.log("------------")
 
+//Validate that missing id throws error
+try{
+    productManager.getProductById(999)
+} catch(e) {
+    console.error(`Failed due to =>${e.name} ${e.message}`)
+    console.log("Existing ids:", productManager.getProducts().map(product => product.id))
+    console.log("------------")
+}
+
 //Validate that products with repeated code cannot be added
 try{
     productManager.addProduct(mateRepeated)
@@ -91,3 +122,21 @@ try{
     console.log("Products with code 0:", productManager.getProductByCode(0))
     console.log("------------")
 }
+
+//Validate that productList can't be mutated without checking type
+try{
+    productManager.products = ['lololo']
+
+} catch(e){
+    console.error(`Did not reassign productList due to =>${e.name} ${e.message}`)
+    console.log("Current list: ", productManager.getProducts())
+    console.log("------------")
+}
+
+//Validate that productList can be mutated if a list of Product items is provided
+const yerba = new Product("Yerba",0,60,1000,"Yerba", "photoUrl")
+const vela = new Product("Vela",1,10,100,"Una vela para el corte de luz", "photoUrl")
+const televisor = new Product("Televisor",2,10,120000,"Televisor 4K", "photoUrl")
+
+productManager.products = [yerba, vela, televisor]
+console.log("New products",productManager.getProducts())
