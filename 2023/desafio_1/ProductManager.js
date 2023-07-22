@@ -1,3 +1,9 @@
+class MissingPropertyError extends Error{
+    constructor(message){
+        super(message)
+        this.name = this.constructor.name
+    }
+}
 class ProductAlreadyExistsError extends Error{
     constructor(message){
         super(message)
@@ -20,6 +26,12 @@ class Product{
         this.stock = stock
         this.description = description
         this.thumbnail = thumbnail
+        if(this.validateAttributes()){
+            throw new MissingPropertyError("None of Product properties can be null or undefined")
+        }
+    }
+    validateAttributes(){
+        return Object.values(this).includes(undefined) || Object.values(this).includes(null)
     }
 }
 
