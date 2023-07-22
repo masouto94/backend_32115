@@ -26,27 +26,28 @@ class Product{
         this.stock = stock
         this.description = description
         this.thumbnail = thumbnail
-        if(this.validateAttributes()){
+        if(this.#validateAttributes()){
             throw new MissingPropertyError("None of Product properties can be null or undefined")
         }
     }
-    validateAttributes(){
+    #validateAttributes(){
         return Object.values(this).includes(undefined) || Object.values(this).includes(null) || Object.values(this).includes(false)
     }
 }
 
 class ProductManager{
+    #products
     constructor(products=[]){
-        this._products = this.validateProductList(products)
+        this.#products = this.#validateProductList(products)
         this._uid = 0
     }
     get products(){
-        return this._products
+        return this.#products
     }
     set products(value){
-        this._products = this.validateProductList(value)
+        this.#products = this.#validateProductList(value)
     }
-    validateProductList(productList){
+    #validateProductList(productList){
         if(productList.length === 0){
             return []
         }
