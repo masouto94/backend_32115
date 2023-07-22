@@ -31,7 +31,7 @@ class Product{
         }
     }
     validateAttributes(){
-        return Object.values(this).includes(undefined) || Object.values(this).includes(null)
+        return Object.values(this).includes(undefined) || Object.values(this).includes(null) || Object.values(this).includes(false)
     }
 }
 
