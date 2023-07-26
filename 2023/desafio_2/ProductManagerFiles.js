@@ -134,7 +134,6 @@ class ProductManager {
         }
         this.products = products
         this.uid = Math.max(...Object.values(this.products.map(prod => prod.id))) + 1
-        console.log(this.uid)
         product.id = this.uid
         this.products.push(product)
         await this.saveToFile()
@@ -144,7 +143,7 @@ class ProductManager {
 
     updateProduct = async (id, ...values) =>{
         const products = await this.getProducts() 
-        this.products = products.map(product =>{
+        this.products = await products.map((product) =>{
              if(product.id === id){
                 Object.entries(...values).forEach( ([key,value]) =>{
                     product[key] = value
@@ -156,8 +155,8 @@ class ProductManager {
         return this.products
     }
     deleteProduct = async (id) => {
-        await this.getProducts() 
-        this.products = this.products.filter(prod => prod.id !== id)
+        const products = await this.getProducts() 
+        this.products = products.filter(prod => prod.id !== id)
         this.saveToFile()
         return this.products
     }
@@ -183,4 +182,15 @@ productManager.getProducts().then(r=>console.log(r))
         await productManager.addProduct(prod)
     }
 })
-.then(async () => productManager.getProducts()).then(r=>console.log(r))
+.then(async () => productManager.getProducts())
+.then(r=>console.log(r))
+
+.then(async()=>{
+    await productManager.updateProduct(3,{description: "La tele para ver al campeon"})
+})
+.then(r=>console.log(r))
+.then(async()=> await productManager.deleteProduct(1))
+.then(r=>{    
+    console.log(r)
+    console.log("Se acabó la yerba")
+})
