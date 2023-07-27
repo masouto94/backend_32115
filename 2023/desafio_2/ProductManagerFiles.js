@@ -175,22 +175,25 @@ const televisor = new Product("Televisor",2,10,120000,"Televisor 4K", "photoUrl"
 const prods = [mate,yerba,vela,televisor]
 
 //Product Manager
-const productManager = new ProductManager("/home/matias/Documents/misRepos/backend_32115/2023/desafio_2/products.js")
-productManager.getProducts().then(r=>console.log(r))
-.then(async ()=> {
+const productManager = new ProductManager("/home/matias/Documents/misRepos/backend_32115/2023/desafio_2/products.js");
+
+(async()=>{
+    try{
+    await productManager.getProducts().then(r=>console.log(r))
+
     for await (let prod of prods){
         await productManager.addProduct(prod)
     }
-})
-.then(async () => productManager.getProducts())
-.then(r=>console.log(r))
 
-.then(async()=>{
-    await productManager.updateProduct(3,{description: "La tele para ver al campeon"})
-})
-.then(r=>console.log(r))
-.then(async()=> await productManager.deleteProduct(1))
-.then(r=>{    
+    await productManager.getProducts().then(r=>console.log(r))
+    await productManager.updateProduct(3,{description: "La tele para ver al campeon"}).then(r=>console.log(r))
+    await productManager.deleteProduct(1).then(r=>{    
     console.log(r)
     console.log("Se acabó la yerba")
-})
+    })
+}
+catch (e){
+    console.log(e)
+}
+
+})();
