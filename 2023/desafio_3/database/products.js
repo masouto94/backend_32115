@@ -9,21 +9,30 @@
 		"id": 0
 	},
 	{
+		"title": "Yerba",
+		"code": 0,
+		"price": 60,
+		"stock": 1000,
+		"description": "Yerba",
+		"thumbnail": "photoUrl",
+		"id": 1
+	},
+	{
 		"title": "Vela",
 		"code": 1,
 		"price": 10,
 		"stock": 100,
 		"description": "Una vela para el corte de luz",
 		"thumbnail": "photoUrl",
-		"id": 1
+		"id": 2
 	},
 	{
 		"title": "Televisor",
 		"code": 2,
 		"price": 10,
 		"stock": 120000,
-		"description": "La tele para ver al campeon",
+		"description": "Televisor 4K",
 		"thumbnail": "photoUrl",
-		"id": 2
+		"id": 3
 	}
 ]

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routes</title>
+</head>
+<body>
+    <div>
+        <h1>Available routes</h1>
+        <ul>
+            <li><a href="./products">All Products</a></li>
+            <li>Products with limit
+                <form action="./products" method="get">
+                    <input type="number" name="limit" id="inputLimiter" required min="1" placeholder="Min:1">
+                    <input type="submit" value="Search" >
+                </form>
+            </li>
+            <li>Product by ID
+                <form action="./products" method="post">
+                    <input type="number" name="productId" id="productId" required min="0">
+                    <input type="submit" value="Search" >
+                </form>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
