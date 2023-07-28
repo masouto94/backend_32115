@@ -27,13 +27,16 @@ app.get('/products', async (req, res) =>{
 
 app.get('/products/:id', async (req, res) =>{
     const prods = await productManager.getProducts().then(r => r.filter(prod => prod.id === parseInt(req.params.id)))
+    if(prods.length === 0){
+        return res.status(404).send({error: "Product not found", description: `ID:${req.params.id} does not exist`})
+    }
     return res.send(prods)
 })
 
 app.post('/products', async (req, res) =>{
     const prods = await productManager.getProducts().then(r => r.filter(prod => prod.id === parseInt(req.body.productId)))
     if(prods.length === 0){
-        return res.send({error: "Product not found", description: `ID:${req.body.productId} does not exist`})
+        return res.status(404).send({error: "Product not found", description: `ID:${req.body.productId} does not exist`})
     }
     return res.send(prods)
 })
