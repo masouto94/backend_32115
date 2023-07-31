@@ -6,7 +6,7 @@
 		"stock": 10,
 		"description": "Un mate normal",
 		"thumbnail": "photoUrl",
-		"id": 0
+		"id": 1
 	},
 	{
 		"title": "Vela",
@@ -15,7 +15,7 @@
 		"stock": 100,
 		"description": "Una vela para el corte de luz",
 		"thumbnail": "photoUrl",
-		"id": 1
+		"id": 3
 	},
 	{
 		"title": "Televisor",
@@ -24,6 +24,6 @@
 		"stock": 120000,
 		"description": "La tele para ver al campeon",
 		"thumbnail": "photoUrl",
-		"id": 2
+		"id": 4
 	}
 ]

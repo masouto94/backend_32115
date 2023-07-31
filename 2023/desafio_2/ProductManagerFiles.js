@@ -17,15 +17,10 @@ class ProductNotFoundError extends Error {
         this.name = this.constructor.name
     }
 }
-class InvalidInteger extends Error {
-    constructor(message) {
-        super(message)
-        this.name = this.constructor.name
-    }
-}
+
 
 class Product {
-    constructor(title, code, price, stock, description, thumbnail) {
+    constructor(title, code, price, stock, description, thumbnail, id=undefined) {
         this.title = title
         this.code = code
         this.price = price
@@ -35,50 +30,40 @@ class Product {
         if (this.#validateAttributes()) {
             throw new MissingPropertyError("None of Product properties can be null or undefined")
         }
+        this.id = id ? id : Product.generateId()
     }
     #validateAttributes() {
         return Object.values(this).includes(undefined) || Object.values(this).includes(null) || Object.values(this).includes(false)
     }
+    static generateId(){
+        if(!this._id){
+            this._id = 1
+        }
+        const id = this._id
+        this._id++
+        return id
+        
+    }
 }
+
 
 class ProductManager {
     #products = []
-    #uid
     constructor(path) {
         this.path = path
-        this.#uid = this.#validateUid(0)
-
-    }
-    get uid() {
-        return this.#uid
-    }
-    set uid(value) {
-        this.#uid = value
     }
     get products() {
         return this.#products
     }
 
     set products(value) {
-        let newUid = 0
         let newProducts = []
         for (let product of this.#validateProductList(value)) {
-            product.id = newUid
             newProducts.push(product)
-            newUid++
         }
-        this.uid = newUid
         this.#products = newProducts
     }
-    #validateUid(uid) {
-        if (!Number.isInteger(uid)) {
-            throw TypeError("UID must be integer")
-        }
-        if (uid < 0) {
-            throw InvalidInteger("UID must be equal or greater than 0")
-        }
-        return parseInt(uid)
-    }
+
     #validateProductList(productList) {
         if (productList.length === 0) {
             return []
@@ -91,16 +76,15 @@ class ProductManager {
         return productList
     }
     getProducts = async () => {
-        return await fs.promises.readFile(this.path, "utf-8")
+        const prods =  await fs.promises.readFile(this.path, "utf-8")
             .then(elem => JSON.parse(elem))
             .then(res => res.map(item => {
-                let { id, ...rest } = item
-                let product = new Product(...Object.values(rest))
-                product.id = id
+                let product = new Product(...Object.values(item))
                 return product
-            }
+                })
             )
-            )
+        return prods
+            
     }
 
     getProductById = async (id) => {
@@ -122,10 +106,8 @@ class ProductManager {
         const products = await this.getProducts()
         //If no products in file override
         if (products.length === 0) {
-            product.id = this.uid
             this.products.push(product)
             await this.saveToFile()
-            this.uid++
             return
         }
         //IF code is repeated return
@@ -133,11 +115,8 @@ class ProductManager {
             throw new ProductAlreadyExistsError("Can not add a product whose code is already in Manager")
         }
         this.products = products
-        this.uid = Math.max(...Object.values(this.products.map(prod => prod.id))) + 1
-        product.id = this.uid
         this.products.push(product)
         await this.saveToFile()
-        this.uid++
         return
     }
 
@@ -174,6 +153,7 @@ const vela = new Product("Vela", 1, 10, 100, "Una vela para el corte de luz", "p
 const televisor = new Product("Televisor", 2, 10, 120000, "Televisor 4K", "photoUrl")
 const prods = [mate, yerba, vela, televisor]
 
+
 //Product Manager
 const productManager = new ProductManager("/home/matias/Documents/misRepos/backend_32115/2023/desafio_2/products.js");
 
@@ -186,8 +166,8 @@ const productManager = new ProductManager("/home/matias/Documents/misRepos/backe
         }
 
         await productManager.getProducts().then(r => console.log(r))
-        await productManager.updateProduct(3, { description: "La tele para ver al campeon" }).then(r => console.log(r))
-        await productManager.deleteProduct(1).then(r => {
+        await productManager.updateProduct(4, { description: "La tele para ver al campeon" }).then(r => console.log(r))
+        await productManager.deleteProduct(2).then(r => {
             console.log(r)
             console.log("Se acabó la yerba")
         })

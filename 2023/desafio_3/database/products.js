@@ -6,7 +6,7 @@
 		"stock": 10,
 		"description": "Un mate normal",
 		"thumbnail": "photoUrl",
-		"id": 0
+		"id": 1
 	},
 	{
 		"title": "Yerba",
@@ -15,7 +15,7 @@
 		"stock": 1000,
 		"description": "Yerba",
 		"thumbnail": "photoUrl",
-		"id": 1
+		"id": 2
 	},
 	{
 		"title": "Vela",
@@ -24,16 +24,16 @@
 		"stock": 100,
 		"description": "Una vela para el corte de luz",
 		"thumbnail": "photoUrl",
-		"id": 2
+		"id": 3
 	},
 	{
 		"title": "Televisor",
 		"code": 3,
 		"price": 10,
 		"stock": 120000,
-		"description": "Televisor 4K",
+		"description": "La tele para ver al campeon",
 		"thumbnail": "photoUrl",
-		"id": 3
+		"id": 4
 	},
 	{
 		"title": "Bombilla",
@@ -42,7 +42,7 @@
 		"stock": 10,
 		"description": "Bombilla",
 		"thumbnail": "photoUrl",
-		"id": 4
+		"id": 5
 	},
 	{
 		"title": "Escritorio",
@@ -51,7 +51,7 @@
 		"stock": 1000,
 		"description": "Escritorio",
 		"thumbnail": "photoUrl",
-		"id": 5
+		"id": 6
 	},
 	{
 		"title": "Computadora",
@@ -60,7 +60,7 @@
 		"stock": 100,
 		"description": "Intel i5",
 		"thumbnail": "photoUrl",
-		"id": 6
+		"id": 7
 	},
 	{
 		"title": "Mouse",
@@ -69,7 +69,7 @@
 		"stock": 120000,
 		"description": "Mouse",
 		"thumbnail": "photoUrl",
-		"id": 7
+		"id": 8
 	},
 	{
 		"title": "Auriculares",
@@ -78,7 +78,7 @@
 		"stock": 120000,
 		"description": "Auriculares",
 		"thumbnail": "photoUrl",
-		"id": 8
+		"id": 9
 	},
 	{
 		"title": "Cargador",
@@ -87,6 +87,6 @@
 		"stock": 120000,
 		"description": "Cargador 5V ",
 		"thumbnail": "photoUrl",
-		"id": 9
+		"id": 10
 	}
 ]
