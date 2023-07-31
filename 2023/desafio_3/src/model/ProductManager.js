@@ -44,6 +44,11 @@ class Product {
         return id
         
     }
+
+    static setBaseId(id){
+        this._id = id
+        return   
+    }
 }
 
 
@@ -74,6 +79,10 @@ class ProductManager {
             }
         }
         return productList
+    }
+    getMaxId = async () => {        
+        const ids= await this.getProducts().then(r => r.map(prod => prod.id))
+        return Math.max(...ids) 
     }
     getProducts = async () => {
         const prods =  await fs.promises.readFile(this.path, "utf-8")
