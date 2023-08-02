@@ -1,0 +1,20 @@
+body{
+    font-family: monospace;
+}
+form>input{
+    width: 10vw;
+}
+form>input[type=submit]{
+    width:5vw;
+    
+}
+.multilineForm{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+li{
+    margin-bottom: 1em;
+    list-style:georgian
+}

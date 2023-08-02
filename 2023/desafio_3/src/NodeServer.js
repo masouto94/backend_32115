@@ -8,12 +8,12 @@ const __dirname = path.dirname(__filename);
 
 
 const app = express()
-
 app.use(express.urlencoded({extended:true}))
+app.use(express.static(__dirname + '/public'))
 app.use('/products', productsRouter)
 
 app.get('/',(req, res) =>{
-    res.status(200).sendFile("views/availableRoutes.html",{root: __dirname })
+    res.status(200).sendFile("public/views/index.html",{root: __dirname })
 })
 
 

@@ -23,7 +23,7 @@ productsRouter.get('/:id', async (req, res) =>{
     return res.status(200).send(prods)
 })
 
-productsRouter.post('/search', async (req, res) =>{
+productsRouter.post('/', async (req, res) =>{
     const prods = await productManager.getProducts().then(r => r.filter(prod => prod.id === parseInt(req.body.productId)))
     if(prods.length === 0){
         return res.status(404).send({error: "Product not found", description: `ID:${req.body.productId} does not exist`})
