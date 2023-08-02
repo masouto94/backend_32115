@@ -108,18 +108,15 @@ class ProductManager {
         return prods.find(item => item.code === code)
     }
     addProduct = async (product) => {
-        //If not product, return
         if (!(product instanceof Product)) {
             throw new TypeError("Can only add Product-like objects")
         }
         const products = await this.getProducts()
-        //If no products in file override
         if (products.length === 0) {
             this.products.push(product)
             await this.saveToFile()
             return
         }
-        //IF code is repeated return
         if (await this.getProductByCode(products, product.code)) {
             throw new ProductAlreadyExistsError("Can not add a product whose code is already in Manager")
         }
@@ -158,6 +155,7 @@ class ProductManager {
     }
 }
 
+// // This code generated the database/products.js content
 // //Products
 // const mate = new Product("Mate", 0, 100, 10, "Un mate normal", "photoUrl")
 // const yerba = new Product("Yerba", 1, 60, 1000, "Yerba", "photoUrl")
@@ -174,7 +172,7 @@ class ProductManager {
 
 
 // //Product Manager
-// const productManager = new ProductManager("/home/matias/Documents/misRepos/backend_32115/2023/desafio_3/database/products.js");
+// const productManager = new ProductManager("/home/matias/Documents/misRepos/backend_32115/2023/desafio_3/src/database/products.js");
 
 // (async () => {
 //     try {
