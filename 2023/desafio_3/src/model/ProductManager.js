@@ -62,7 +62,7 @@ class ProductManager {
     }
 
     set products(value) {
-        let newProducts = []
+        const newProducts = []
         for (let product of this.#validateProductList(value)) {
             newProducts.push(product)
         }
@@ -88,7 +88,7 @@ class ProductManager {
         const prods =  await fs.promises.readFile(this.path, "utf-8")
             .then(elem => JSON.parse(elem))
             .then(res => res.map(item => {
-                let product = new Product(...Object.values(item))
+                const product = new Product(...Object.values(item))
                 return product
                 })
             )
@@ -97,7 +97,7 @@ class ProductManager {
     }
 
     getProductById = async (id) => {
-        const found = await this.getProducts().then((res) => res.find(item => item.id == id))
+        const found = await this.getProducts().then((res) => res.find(item => item.id === id))
 
         if (!found) {
             throw new ProductNotFoundError(`Product with id: ${id} not found in Manager`)
@@ -105,7 +105,7 @@ class ProductManager {
         return found
     }
     getProductByCode = async (prods, code) => {
-        return prods.find(item => item.code == code)
+        return prods.find(item => item.code === code)
     }
     addProduct = async (product) => {
         //If not product, return
@@ -149,9 +149,12 @@ class ProductManager {
         return this.products
     }
     saveToFile = async () => {
-        await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, "\t"))
-            .then(res => console.log(`File saved in ${this.path}`))
-            .catch(rej => console.log(`Failed to save file in ${this.path}`))
+        try{
+            await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, "\t"))
+            console.log(`File saved in ${this.path}`)
+        } catch(e){
+            console.log(`Failed to save file in ${this.path} => ${e.name}` )
+        }
     }
 }
 
