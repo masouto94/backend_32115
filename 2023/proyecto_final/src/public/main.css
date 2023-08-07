@@ -1,6 +1,10 @@
 body{
     font-family: monospace;
 }
+h1,h2{
+    color: #313638;
+    font-size:x-large;
+}
 form>input{
     width: 10vw;
 }
@@ -17,4 +21,11 @@ form>input[type=submit]{
 li{
     margin-bottom: 1em;
     list-style:georgian
+}
+
+.actionsContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 10vw;
 }

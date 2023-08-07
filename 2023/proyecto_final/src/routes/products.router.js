@@ -1,7 +1,8 @@
 import {Router} from 'express'
-import { Product, ProductManager, ProductAlreadyExistsError } from '../model/ProductManager.js' 
+import {  ProductManager, ProductAlreadyExistsError } from '../model/ProductManager.js' 
+import {  Product } from '../model/Product.js' 
 
-const productManager = new ProductManager("./src/database/products.js")
+const productManager = new ProductManager("./src/database/products.json")
 
 const productsRouter = Router()
 
