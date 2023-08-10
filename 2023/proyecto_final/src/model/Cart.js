@@ -9,11 +9,11 @@ class Cart {
 
     }
 #validateAttributes() {
-    // for (let product of this.products) {
-    //     if (!(product instanceof Product)) {
-    //         throw new TypeError("Products attribute must be composed of Product-like objects")
-    //     }
-    // }
+    for (let product of this.products) {
+        if (!(product instanceof Product)) {
+            throw new TypeError("Products attribute must be composed of Product-like objects")
+        }
+    }
     return 
 }
     static generateId(){

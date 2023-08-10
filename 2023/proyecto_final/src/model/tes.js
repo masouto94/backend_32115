@@ -1,9 +1,3 @@
-class MissingPropertyError extends Error {
-    constructor(message) {
-        super(message)
-        this.name = this.constructor.name
-    }
-}
 class Product {
     #quantity
     constructor(title, code, price, stock, description, thumbnail, id=undefined) {
@@ -43,9 +37,32 @@ class Product {
         this.#quantity = amount
     }
 }
+const mate = new Product("Mate", 0, 100, 10, "Un mate normal", "photoUrl")
+const yerba = new Product("Yerba", 1, 60, 1000, "Yerba", "photoUrl")
 
+const add = (arr,prod) => {
+    
+    if(!arr.includes(prod)){
+        const toAdd = prod
+        toAdd.quantity = 1
+        arr.push(toAdd)
+        return
 
-export {
-    MissingPropertyError,
-    Product
+    }
+    arr = arr.map((item) => {
+        if(item.code === prod.code){
+            item.quantity++
+        }
+    return
+    })
+
+}
+
+let cart = []
+
+add(cart,mate)
+console.log(cart)
+
+for (const prod of cart) {
+    console.log(typeof(prod))    
 }

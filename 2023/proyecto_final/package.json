@@ -9,6 +9,9 @@
     "server": "nodemon ./src/server.js"
   },
   "author": "Matias Souto",
+  "engines": {
+    "node": "18.16.0"
+  },
   "license": "ISC",
   "devDependencies": {
     "morgan": "^1.10.0",

@@ -33,33 +33,30 @@ class CartManager {
         return this.carts
     }
     addProduct = (product) => {
+        const toAdd = product
         if(this.currentProducts.length === 0){
-            this.currentProducts.push({
-                ...product,
-                quantity: 1
-            })
+            toAdd.quantity = 1
+            this.currentProducts.push(toAdd)
+            return
         }
-        this.currentProducts.map(prod => {
-            if (prod.code !== product.code){
-                return {
-                    ...product,
-                    quantity: 1
+        const codes = this.currentProducts.map(prod => prod.code)
+        if(codes.includes(product.id)){
+            this.currentProducts.map(prod => {
+                if (prod.code === product.code){
+                    prod.quantity++
+                    return prod
                 }
-            }else{
-                return {
-                    ...prod,
-                    quantity: prod.quantity++
-                }
-            }
-        })
+            })
+        }else{
+            toAdd.quantity = 1
+            this.currentProducts.push(toAdd)   
+        }
 
     }
-    createCart = (products) =>{
-        for(let product of products){
-
-        }
+    createCart = () =>{
         const cartToAdd = new Cart(this.currentProducts)
         this.carts.push(cartToAdd)
+        this.currentProducts = []
     }
 
     saveCarts = async () =>{
@@ -74,14 +71,19 @@ class CartManager {
 const mate = new Product("Mate", 0, 100, 10, "Un mate normal", "photoUrl")
 const yerba = new Product("Yerba", 1, 60, 1000, "Yerba", "photoUrl")
 
-const cartManager = new CartManager("/home/matias/Documents/misRepos/backend_32115/2023/proyecto_final/src/database/carts.json")
+const cartManager = new CartManager("C:/Users/masou/Dev/backend_32115/2023/proyecto_final/src/database/carts.json")
 
-// console.log(await cartManager.getCarts())
-// cartManager.createCart([mate,yerba])
+// cartManager.addProduct(mate)
+// cartManager.addProduct(yerba)
+// cartManager.addProduct(mate)
+// cartManager.createCart()
 // await cartManager.saveCarts()
-cartManager.addProduct(mate)
-cartManager.addProduct(mate)
-console.log(cartManager.currentProducts)
+// console.log(
+//     cartManager.carts[0],"\n\n",
+//     cartManager.carts[0].products[0],'Cantidad => ', cartManager.carts[0].products[0].quantity,"\n",
+//     cartManager.carts[0].products[1], 'Cantidad => ', cartManager.carts[0].products[1].quantity
+//     )
+
 export {
     CartManager
 }
