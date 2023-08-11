@@ -40,7 +40,7 @@ class CartManager {
             return
         }
         const codes = this.currentProducts.map(prod => prod.code)
-        if(codes.includes(product.id)){
+        if(codes.includes(product.code)){
             this.currentProducts.map(prod => {
                 if (prod.code === product.code){
                     prod.quantity++
