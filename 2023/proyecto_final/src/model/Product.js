@@ -5,7 +5,6 @@ class MissingPropertyError extends Error {
     }
 }
 class Product {
-    #quantity
     constructor(title, code, price, stock, description, thumbnail, id=undefined) {
         this.title = title
         this.code = code
@@ -36,12 +35,6 @@ class Product {
         return   
     }
 
-    get quantity(){
-        return this.#quantity 
-    }
-    set quantity(amount){
-        this.#quantity = amount
-    }
 }
 
 

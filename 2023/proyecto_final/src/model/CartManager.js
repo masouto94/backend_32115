@@ -23,15 +23,23 @@ class CartManager {
     }
 
     getCarts = async () =>{
-        this.carts = await fs.promises.readFile(this.path)
+        const carts = await fs.promises.readFile(this.path)
             .then(r => JSON.parse(r))
             .then(res => res.map(item => {
                 const cart = new Cart(...Object.values(item))
                 return cart
                 })
             )
+        Cart.setBaseId(Math.max(...carts.map(cart => cart.id)) + 1)
+        this.carts = carts
         return this.carts
     }
+
+    getMaxId = async () => {        
+        const ids= await this.getCarts().then(r => r.map(cart => cart.id))
+        return Math.max(...ids) 
+    }
+
     addProduct = (product) => {
         const toAdd = product
         if(this.currentProducts.length === 0){
@@ -54,6 +62,7 @@ class CartManager {
 
     }
     createCart = () =>{
+        this.getMaxId()
         const cartToAdd = new Cart(this.currentProducts)
         this.carts.push(cartToAdd)
         this.currentProducts = []
@@ -70,19 +79,29 @@ class CartManager {
 
 const mate = new Product("Mate", 0, 100, 10, "Un mate normal", "photoUrl")
 const yerba = new Product("Yerba", 1, 60, 1000, "Yerba", "photoUrl")
-
+const mouse = new Product("Mouse", 7, 10, 120000, "Mouse", "photoUrl")
+const auriculares = new Product("Auriculares", 8, 10, 120000, "Auriculares", "photoUrl")
+const cargador = new Product("Cargador", 9, 10, 120000, "Cargador 5V ", "photoUrl")
 const cartManager = new CartManager("C:/Users/masou/Dev/backend_32115/2023/proyecto_final/src/database/carts.json")
 
-// cartManager.addProduct(mate)
-// cartManager.addProduct(yerba)
-// cartManager.addProduct(mate)
-// cartManager.createCart()
-// await cartManager.saveCarts()
-// console.log(
-//     cartManager.carts[0],"\n\n",
-//     cartManager.carts[0].products[0],'Cantidad => ', cartManager.carts[0].products[0].quantity,"\n",
-//     cartManager.carts[0].products[1], 'Cantidad => ', cartManager.carts[0].products[1].quantity
-//     )
+// cart 1
+cartManager.addProduct(mate)
+cartManager.addProduct(yerba)
+cartManager.addProduct(mate)
+cartManager.createCart()
+// cart 2
+cartManager.addProduct(mouse)
+cartManager.addProduct(auriculares)
+cartManager.addProduct(cargador)
+cartManager.createCart()
+await cartManager.saveCarts()
+await cartManager.getCarts()
+//cart 3
+cartManager.addProduct(cargador)
+cartManager.addProduct(cargador)
+cartManager.addProduct(cargador)
+cartManager.createCart()
+await cartManager.saveCarts()
 
 export {
     CartManager
