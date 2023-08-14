@@ -1,0 +1,12 @@
+<h2>Create cart</h2>
+<script type="text/javascript" src="js/addProduct.js"></script>
+
+<form action="/carts" method="post">
+    <select name="select" id="products">
+    {{#each products}}
+    <option value={{this.id}}>{{this.title}}</option>
+    {{/each}}
+    </select>
+    <input id="addProduct" type="button" value="Add product" onclick="addProduct">
+</form>
+

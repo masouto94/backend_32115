@@ -3,7 +3,7 @@ import path from 'path';
 import morgan from 'morgan'
 import handlebars from 'express-handlebars'
 import {fileURLToPath} from 'url';
-import productsRouter from './routes/products.router.js'
+import {productsRouter, productManager} from './routes/products.router.js'
 import cartRouter from './routes/cart.router.js'
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'))
 app.use('/products', productsRouter)
-app.use('/cart', cartRouter)
+app.use('/carts', cartRouter)
 
 
 app.get('/',(req, res) =>{
@@ -36,11 +36,13 @@ app.get('/productActions',(req, res) =>{
     })
 })
 
-app.get('/cartActions',(req, res) =>{
+app.get('/cartActions', async (req, res) =>{
+    const prods = await productManager.getProducts()
     res.status(200).render("cartActions",
     {
         layout: 'main',
-        title: 'Cart actions'
+        title: 'Cart actions',
+        products: prods
     })
 })
 
