@@ -82,26 +82,26 @@ const yerba = new Product("Yerba", 1, 60, 1000, "Yerba", "photoUrl")
 const mouse = new Product("Mouse", 7, 10, 120000, "Mouse", "photoUrl")
 const auriculares = new Product("Auriculares", 8, 10, 120000, "Auriculares", "photoUrl")
 const cargador = new Product("Cargador", 9, 10, 120000, "Cargador 5V ", "photoUrl")
-const cartManager = new CartManager("C:/Users/masou/Dev/backend_32115/2023/proyecto_final/src/database/carts.json")
+const cartManager = new CartManager("src/database/carts.json")
 
-// cart 1
-cartManager.addProduct(mate)
-cartManager.addProduct(yerba)
-cartManager.addProduct(mate)
-cartManager.createCart()
-// cart 2
-cartManager.addProduct(mouse)
-cartManager.addProduct(auriculares)
-cartManager.addProduct(cargador)
-cartManager.createCart()
-await cartManager.saveCarts()
-await cartManager.getCarts()
-//cart 3
-cartManager.addProduct(cargador)
-cartManager.addProduct(cargador)
-cartManager.addProduct(cargador)
-cartManager.createCart()
-await cartManager.saveCarts()
+// // cart 1
+// cartManager.addProduct(mate)
+// cartManager.addProduct(yerba)
+// cartManager.addProduct(mate)
+// cartManager.createCart()
+// // cart 2
+// cartManager.addProduct(mouse)
+// cartManager.addProduct(auriculares)
+// cartManager.addProduct(cargador)
+// cartManager.createCart()
+// await cartManager.saveCarts()
+// await cartManager.getCarts()
+// //cart 3
+// cartManager.addProduct(cargador)
+// cartManager.addProduct(cargador)
+// cartManager.addProduct(cargador)
+// cartManager.createCart()
+// await cartManager.saveCarts()
 
 export {
     CartManager

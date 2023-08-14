@@ -14,6 +14,13 @@ class ProductNotFoundError extends Error {
     }
 }
 
+class KeyError extends Error {
+    constructor(message){
+        super(message)
+        this.name = this.constructor.name
+    }
+}
+
 
 
 class ProductManager {
@@ -91,23 +98,46 @@ class ProductManager {
     }
 
     updateProduct = async (id, ...values) => {
+        const keys = Object.keys(...values)
         const products = await this.getProducts()
-        this.products = await products.map((product) => {
+        const newProducts = await products.map((product) => {
             if (product.id === id) {
+                if(keys.some((key) => ! Object.keys(product).includes(key))){
+                    const missing = []
+                    keys.map((key)=> {
+                        if(! Object.keys(product).includes(key)){
+                            missing.push(key)
+                        }
+                    })
+                    throw new KeyError(`Product does not include keys: ${missing}`)
+                }
                 Object.entries(...values).forEach(([key, value]) => {
-                    product[key] = value
+                    if(key === 'id'){
+                        throw new KeyError("Cannot update id property for Product")
+                    }
+                    else if(['code','stock'].includes(key)){
+                        product[key] = parseInt(value)
+                    }
+                    else if(key === 'price'){
+                        product[key] = parseFloat(value)
+                    }
+                    else{
+                        product[key] = value
+                    }
                 })
             }
             return product
         })
+        this.products = newProducts
         await this.saveToFile()
-        return this.products
+        return this.getProductById(id)
     }
     deleteProduct = async (id) => {
+        await this.getProductById(id)
         const products = await this.getProducts()
         this.products = products.filter(prod => prod.id !== id)
         this.saveToFile()
-        return this.products
+        return
     }
     saveToFile = async () => {
         try{
@@ -159,5 +189,6 @@ class ProductManager {
 export {
     ProductAlreadyExistsError,
     ProductNotFoundError,
+    KeyError,
     ProductManager
 }
