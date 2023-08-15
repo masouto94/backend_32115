@@ -80,8 +80,8 @@ class CartManager {
 
     addProductToExistingCart = async (cartId, product) => {
         const cartToModify = await this.getCarts()
-        this.carts = this.carts.map((cart)=>{
-            if(cart.id === cartId){
+        this.carts = this.carts.map((cart) => {
+            if (cart.id === cartId) {
                 cart.addProduct(product)
             }
             return cart
@@ -90,51 +90,21 @@ class CartManager {
         await this.saveCarts()
         return cartToModify
 
+    }
+
+    createCart = async () => {
+        await this.getCarts()
+        const cartToAdd = new Cart(this.currentProducts)
+        this.carts.push(cartToAdd)
+        this.currentProducts = []
+        return cartToAdd
+    }
+
+    saveCarts = async () => {
+
+        await fs.promises.writeFile(this.path, JSON.stringify(this.carts, null, "\t"))
+    }
 }
-
-createCart = async () => {
-    await this.getCarts()
-    const cartToAdd = new Cart(this.currentProducts)
-    this.carts.push(cartToAdd)
-    this.currentProducts = []
-    return cartToAdd
-}
-
-saveCarts = async () => {
-
-    await fs.promises.writeFile(this.path, JSON.stringify(this.carts, null, "\t"))
-}
-
-
-
-
-}
-
-const mate = new Product("Mate", 0, 100, 10, "Un mate normal", "photoUrl")
-const yerba = new Product("Yerba", 1, 60, 1000, "Yerba", "photoUrl")
-const mouse = new Product("Mouse", 7, 10, 120000, "Mouse", "photoUrl")
-const auriculares = new Product("Auriculares", 8, 10, 120000, "Auriculares", "photoUrl")
-const cargador = new Product("Cargador", 9, 10, 120000, "Cargador 5V ", "photoUrl")
-const cartManager = new CartManager("src/database/carts.json")
-
-// // cart 1
-// cartManager.addProduct(mate)
-// cartManager.addProduct(yerba)
-// cartManager.addProduct(mate)
-// cartManager.createCart()
-// // cart 2
-// cartManager.addProduct(mouse)
-// cartManager.addProduct(auriculares)
-// cartManager.addProduct(cargador)
-// cartManager.createCart()
-// await cartManager.saveCarts()
-// await cartManager.getCarts()
-// //cart 3
-// cartManager.addProduct(cargador)
-// cartManager.addProduct(cargador)
-// cartManager.addProduct(cargador)
-// cartManager.createCart()
-// await cartManager.saveCarts()
 
 export {
     CartManager,

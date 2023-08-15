@@ -3,12 +3,12 @@ import { Product } from "./Product.js"
 class Cart {
     constructor(products, price = undefined, id = undefined) {
         this.products = this.retrieveProducts(products)
-        this.price = price ? price : this.calculatePrice() 
+        this.price = price ? price : this.calculatePrice()
         this.id = id ? id : Cart.generateId()
     }
 
-    get codes(){
-        return this.products.map((prod)=>prod.code)
+    get codes() {
+        return this.products.map((prod) => prod.code)
     }
     calculatePrice = () => {
         this.price = this.products.reduce((accumulator, product) => { return accumulator + (product.price * product.quantity) }, 0)
@@ -40,15 +40,15 @@ class Cart {
     }
 
     addProduct = (product) => {
-        if(this.codes.includes(product.code)){
-            this.products = this.products.map((prod)=>{
-                if(prod.code === product.code){
+        if (this.codes.includes(product.code)) {
+            this.products = this.products.map((prod) => {
+                if (prod.code === product.code) {
                     prod.quantity++
                     return prod
                 }
                 return prod
             })
-        }else{
+        } else {
             product.quantity = 1
             this.products.push(product)
         }
