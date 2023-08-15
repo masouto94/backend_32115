@@ -1,3 +1,18 @@
 [
-	
+	{
+		"products": [
+			{
+				"title": "Mate",
+				"code": 0,
+				"price": 100,
+				"stock": 10,
+				"description": "Un mate normal",
+				"thumbnail": "photoUrl",
+				"id": 1,
+				"quantity": 3
+			}
+		],
+		"price": 300,
+		"id": 1
+	}
 ]
