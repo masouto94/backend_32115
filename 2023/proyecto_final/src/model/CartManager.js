@@ -30,7 +30,9 @@ class CartManager {
                 return cart
                 })
             )
-        Cart.setBaseId(Math.max(...carts.map(cart => cart.id)) + 1)
+        if(carts.length !== 0){
+            Cart.setBaseId(Math.max(...carts.map(cart => cart.id)) + 1)
+        }
         this.carts = carts
         return this.carts
     }
@@ -61,15 +63,17 @@ class CartManager {
         }
 
     }
-    createCart = () =>{
-        this.getMaxId()
+    createCart = async () =>{
+        await this.getCarts()
         const cartToAdd = new Cart(this.currentProducts)
         this.carts.push(cartToAdd)
         this.currentProducts = []
+        return cartToAdd
     }
 
     saveCarts = async () =>{
-        await fs.promises.writeFile(this.path, JSON.stringify(this.carts, null, "\t"))
+        
+        await fs.promises.writeFile(this.path,JSON.stringify(this.carts, null, "\t" ))
     }
 
 

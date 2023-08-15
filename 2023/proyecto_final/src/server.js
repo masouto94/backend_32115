@@ -42,7 +42,8 @@ app.get('/cartActions', async (req, res) =>{
     {
         layout: 'main',
         title: 'Cart actions',
-        products: prods
+        products: prods,
+        addProductHandler: 'addProduct'
     })
 })
 
