@@ -1,50 +1,73 @@
 import { Product } from "./Product.js"
 
 class Cart {
-    constructor(products, price=undefined, id=undefined) {
+    constructor(products, price = undefined, id = undefined) {
         this.products = this.retrieveProducts(products)
-        this.price = price ? price : this.products.reduce((accumulator, product) => {return accumulator + (product.price * product.quantity)}, 0)
+        this.price = price ? price : this.calculatePrice() 
         this.id = id ? id : Cart.generateId()
-
     }
 
+    get codes(){
+        return this.products.map((prod)=>prod.code)
+    }
+    calculatePrice = () => {
+        this.price = this.products.reduce((accumulator, product) => { return accumulator + (product.price * product.quantity) }, 0)
+        return this.price
+    }
     retrieveProducts(products) {
         const productList = []
         for (let product of products) {
             if (!(product instanceof Product)) {
-                try{
-                    let {title, code, price, stock, description, thumbnail, id} = product
+                try {
+                    let { title, code, price, stock, description, thumbnail, id } = product
                     let toAdd = new Product(title, code, price, stock, description, thumbnail, id)
-                    if(product.quantity){
+                    if (product.quantity) {
                         toAdd.quantity = product.quantity
                     }
                     productList.push(toAdd)
                     continue
-                    
-                }catch(e){
+
+                } catch (e) {
                     throw new TypeError("Products attribute must be composed of Product-like objects")
                 }
             }
-            else{
+            else {
                 productList.push(product)
             }
-            
+
         }
         return productList
-}
-    static generateId(){
-        if(!this._id){
+    }
+
+    addProduct = (product) => {
+        if(this.codes.includes(product.code)){
+            this.products = this.products.map((prod)=>{
+                if(prod.code === product.code){
+                    prod.quantity++
+                    return prod
+                }
+                return prod
+            })
+        }else{
+            product.quantity = 1
+            this.products.push(product)
+        }
+        this.calculatePrice()
+        return this.products
+    }
+    static generateId() {
+        if (!this._id) {
             this._id = 1
         }
         const id = this._id
         this._id++
         return id
-        
+
     }
 
-    static setBaseId(id){
+    static setBaseId(id) {
         this._id = id
-        return   
+        return
     }
 
 }

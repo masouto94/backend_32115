@@ -79,25 +79,16 @@ class CartManager {
     }
 
     addProductToExistingCart = async (cartId, product) => {
-    const cartToModify = await this.getCartById(cartId)
-// Poner en la clase Cart un metodo para agregar un prod en si mismo
-        try {
-            const toAdd = produ
-            await this.getCarts()
-            for (let cart of this.carts) {
-                if (cart.id === cartToModify.id) {
-                    console.log(cart)
-                    console.log('######')
-                    console.log(cartToModify)
-                    cart.products.push(toAdd)
-                    
-                }
+        const cartToModify = await this.getCarts()
+        this.carts = this.carts.map((cart)=>{
+            if(cart.id === cartId){
+                cart.addProduct(product)
             }
-        } catch (e) {
-        console.log(e)
-            // throw new TypeError("Can only add Product-like objects")
-    }
-    return cartToModify
+            return cart
+        })
+        console.log(this.carts)
+        await this.saveCarts()
+        return cartToModify
 
 }
 

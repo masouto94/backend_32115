@@ -88,5 +88,14 @@
 		"description": "Cargador 5V ",
 		"thumbnail": "photoUrl",
 		"id": 10
+	},
+	{
+		"title": "Soda",
+		"code": 11,
+		"price": 190,
+		"stock": 90,
+		"description": "Una buena soda",
+		"thumbnail": "img",
+		"id": 11
 	}
 ]

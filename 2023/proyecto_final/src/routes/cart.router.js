@@ -4,7 +4,6 @@ import { ProductManager } from '../model/ProductManager.js'
 
 const cartManager = new CartManager("./src/database/carts.json")
 const productManager = new ProductManager("./src/database/products.json")
-
 const cartRouter = Router()
 
 cartRouter.get('/',  async (req, res) =>{
@@ -18,11 +17,16 @@ cartRouter.get('/:cid',  async (req, res) =>{
  })
 
  cartRouter.post('/:cid/product/:pid',  async (req, res) =>{
-     await cartManager.addProductToExistingCart(parseInt(req.body.cid),parseInt(req.body.pid))
-     return res.status(200).send({
-          message:`Added product with ID: ${req.body.pid} to cart ${req.body.cid}`,
-          products: await cartManager.getCartById(parseInt(req.body.cid)).products
-     })
+     try{
+          const toAdd = await productManager.getProductById(parseInt(req.body.pid))
+          const cartToUpdate = await cartManager.getCartById(parseInt(req.body.cid))
+          await cartManager.addProductToExistingCart(parseInt(req.body.cid), toAdd)
+          return res.status(200).send({
+               message:`Added product with ID: ${req.body.pid} to cart ${req.body.cid}`
+          })
+     }catch(e){
+          return res.status(400).send({message:`Failed to update cart ${req.body.cid}`, error: e.name})
+     }
  })
 
 cartRouter.post('/create',  async (req, res) =>{
