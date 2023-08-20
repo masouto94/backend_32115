@@ -1,13 +1,12 @@
 const socket = io()
-socket.emit('greeting','este es un mensaje en mayuscula')
+socket.emit('greeting','Bienvenido al websocket')
 
-const formData = document.querySelector('#testForm')
+const formData = document.querySelectorAll('.former')
 
 const show = async (e) =>{
     e.preventDefault()
-    const valor = document.querySelector('#content').value
-    console.log(valor)
-    socket.emit('inputMessage',valor, formData.id)
+    const valor = e.target.querySelector('.inputContent').value
+    socket.emit('inputMessage',valor, e.target.id)
     return 
 }
-formData.addEventListener('submit', show)
+formData.forEach(form => form.addEventListener('submit', show))

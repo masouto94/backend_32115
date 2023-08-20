@@ -21,9 +21,12 @@ const httpServer = app.listen(utils.PORT,()=>{
 })
 const socketServer = new Server(httpServer)
 socketServer.on('connection', (conn) =>{
-    console.log('Connected to SOCKET')
     conn.on('greeting', (message) => {
         console.log(message.toUpperCase())
     })
-    conn.on('inputMessage', utils.renderMessage)
+    conn.on('inputMessage',(message,target)=>{
+        utils.renderMessage(message,target)
+    })
 })
+
+//Hay que pasar esto al proyecto final y hacer una pagina nueva
