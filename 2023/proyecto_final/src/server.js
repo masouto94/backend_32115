@@ -5,6 +5,7 @@ import handlebars from 'express-handlebars'
 import {fileURLToPath} from 'url';
 import {productsRouter, productManager} from './routes/products.router.js'
 import cartRouter from './routes/cart.router.js'
+import {socketServer, handlers} from './utils/websocket.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,6 +37,15 @@ app.get('/productActions',(req, res) =>{
     })
 })
 
+app.get('/currentProducts',(req, res) =>{
+    res.status(200).render("currentProducts",
+    {
+        layout: 'main',
+        title: 'Current products',
+        socketHandler: "websocket"
+    })
+})
+
 app.get('/cartActions', async (req, res) =>{
     const prods = await productManager.getProducts()
     res.status(200).render("cartActions",
@@ -48,6 +58,8 @@ app.get('/cartActions', async (req, res) =>{
 })
 
 
-app.listen(PORT,()=>{
+const httpServer = app.listen(PORT,()=>{
     console.log(`Connected to port ${PORT}`)
 })
+
+socketServer(httpServer, handlers)

@@ -84,6 +84,15 @@ productsRouter.delete('/:id', async (req, res) =>{
     }
 })
 
+productsRouter.get('/currentProducts', async (req, res) =>{
+    if(req.query.limit){
+        const prods = await productManager.getProducts().then(r => r.slice(0,req.query.limit))
+        return res.status(200).send(prods)
+        
+    }
+    const prods = await productManager.getProducts()
+    return res.status(200).send(prods)
+})
 export {
     productManager,
     productsRouter
