@@ -38,4 +38,7 @@ cartRouter.post('/create',  async (req, res) =>{
      await cartManager.saveCarts()
      return res.status(200).send({message:'Successfully created cart',cart:newCart})
 })
-export default cartRouter
+export {
+     cartRouter,
+     cartManager
+} 

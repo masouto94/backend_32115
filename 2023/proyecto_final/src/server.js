@@ -4,7 +4,7 @@ import morgan from 'morgan'
 import handlebars from 'express-handlebars'
 import {fileURLToPath} from 'url';
 import {productsRouter, productManager} from './routes/products.router.js'
-import cartRouter from './routes/cart.router.js'
+import {cartRouter, cartManager} from './routes/cart.router.js'
 import {socketServer, handlers} from './utils/websocket.js'
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,12 +48,14 @@ app.get('/currentProducts',(req, res) =>{
 
 app.get('/cartActions', async (req, res) =>{
     const prods = await productManager.getProducts()
+    const carts = await cartManager.getCarts()
     res.status(200).render("cartActions",
     {
         layout: 'main',
         title: 'Cart actions',
         products: prods,
         addProductHandler: 'addProduct',
+        carts: carts
     })
 })
 

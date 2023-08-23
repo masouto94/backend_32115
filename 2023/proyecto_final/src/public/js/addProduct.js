@@ -1,7 +1,11 @@
+const socket = io()
+socket.emit('greeting','Bienvenido al websocket')
+
 const selectedQuantity = document.querySelector("#selectedProductsQuantity")
 const cartForm = document.querySelector("#cartForm")
 const addProductBtn = document.querySelector("#addProduct")
 const updateCartForm = document.querySelector("#updateCartForm")
+const currentCarts = document.querySelector("#currentCarts")
 
 let productIds = []
 
@@ -34,9 +38,10 @@ const createCart =  async (e) =>{
         return
     }
     await fetchData(JSON.stringify({selectedProducts:productIds}), '/carts/create', "POST")
-      productIds = []
-      selectedQuantity.textContent = 0
-      alert('Successfully created cart')
+    productIds = []
+    selectedQuantity.textContent = 0
+    alert('Successfully created cart')
+    socket.emit('createCart')
 }
 
 const updateCart =  async (e) =>{
@@ -47,8 +52,31 @@ const updateCart =  async (e) =>{
   alert(`Successfully added product ${productToAdd} to cart: ${cartToUpdate}`)
 }
 
+const renderCarts =  async (e) =>{
+  const carts = await fetch('/carts',{
+    method:'GET'
+  }).then(r=>r.json())
+  
+  const templates = carts.map((cart)=>{
+    let template = `<div id="cart_${cart.id}">`
+    let prods=``
+    for (const prod of cart.products) {
+      prods += `
+      <h3>${prod.title}</h3>
+      <h3>${prod.quantity}</h3>
+      `
+    }
+    template += prods
+    template += `<h4>Price:${cart.price}</h4>
+    </div>`
+    return template
+  })
+
+  currentCarts.innerHTML = templates
+}
+
+socket.on('updateCarts',renderCarts)
 addProductBtn.addEventListener('click', addProduct)
 cartForm.addEventListener('submit', createCart)
 updateCartForm.addEventListener('submit', updateCart)
-
 
