@@ -58,7 +58,7 @@ const renderCarts =  async (e) =>{
   }).then(r=>r.json())
   
   const templates = carts.map((cart)=>{
-    let template = `<div id="cart_${cart.id}">`
+    let template = `<div class="cart" id="cart_${cart.id}">`
     let prods=``
     for (const prod of cart.products) {
       prods += `

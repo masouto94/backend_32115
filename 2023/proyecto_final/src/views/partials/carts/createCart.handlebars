@@ -12,7 +12,7 @@
 <div id="currentCarts">
     {{#each carts}}
     {{#with this as |cart|}}
-    <div id="cart_{{cart.id}}">
+    <div class="cart" id="cart_{{cart.id}}">
         {{#each cart.products}}
             <h3>{{this.title}}</h3>
             <h3>{{this.quantity}}</h3>

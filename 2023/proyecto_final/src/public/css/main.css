@@ -29,3 +29,17 @@ li{
     justify-content: space-between;
     width: 10vw;
 }
+
+#currentCarts{
+    display: flex;
+    flex-direction: column;
+}
+
+.cart{
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-color:  #313638 ;
+    width: 6vw;
+    text-align: center;
+}
