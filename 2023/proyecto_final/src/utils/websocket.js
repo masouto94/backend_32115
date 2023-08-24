@@ -1,10 +1,27 @@
 import {Server} from 'socket.io'
+import {productsRouter, productManager} from '../routes/products.router.js'
+import {cartRouter, cartManager} from '../routes/cart.router.js'
+class SocketHandler{
+    constructor(event, callback=undefined, target=undefined,args=undefined){
+        this.event = event
+        this.callback = callback
+        this.target = target
+        this.args = args
+    }
 
+    reemit(socket){
+        if(this.callback){
+            console.log(this.event)
+            socket.on(this.event, this.callback)
+        }
+    
+    }
+}
 const greeting = (message) => {
     console.log(message.toUpperCase())
 }
 const greetingHandler = () => {
-    return {on: 'greeting', func:greeting}
+    return new SocketHandler('greeting', greeting)
 }
 
 const renderMessage = (message,source) => {
@@ -15,28 +32,34 @@ const renderMessage = (message,source) => {
 }
 
 const renderMessageHandler = () => {
-    return {on: 'inputMessage', func:renderMessage}
+    return new SocketHandler('inputMessage', renderMessage)
 }
 
-const renderCartsHandler = () => {
-    return {on: 'createCart', target:'updateCarts'}
+const renderCartsHandler = async () => {
+    const carts = await cartManager.getCarts()
+    return new SocketHandler('createCart', undefined,'updateCarts', carts)
 }
 
 const handlers = [greetingHandler(), renderMessageHandler()]
-const reemiters = [renderCartsHandler()]
+const reemiters = [await renderCartsHandler()]
 const socketServer = (httpServer, handlers) => {
     const socket = new Server(httpServer)
     socket.on('connection', (conn) =>{
         for (const handler of handlers) {
-            conn.on(handler.on, handler.func)
+            conn.on(handler.event, handler.callback)
         }
         for (const reemiter of reemiters) {
-            conn.on(reemiter.on, () => conn.emit(reemiter.target))
+            conn.on(reemiter.event, async (e) => {
+                console.log(reemiter.args)
+                conn.emit(reemiter.target,reemiter.args)
+            })
         }
         
     })
 }
 export{
     socketServer,
-    handlers
+    SocketHandler,
+    handlers,
+    reemiters
 }

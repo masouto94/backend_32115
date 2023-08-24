@@ -31,8 +31,12 @@ li{
 }
 
 #currentCarts{
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 200px 200px;
+    height: 50vh;
+    overflow-y: scroll;
+    margin: 5vh 0;
+    width: max-content;
 }
 
 .cart{

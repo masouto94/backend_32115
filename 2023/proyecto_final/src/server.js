@@ -5,7 +5,7 @@ import handlebars from 'express-handlebars'
 import {fileURLToPath} from 'url';
 import {productsRouter, productManager} from './routes/products.router.js'
 import {cartRouter, cartManager} from './routes/cart.router.js'
-import {socketServer, handlers} from './utils/websocket.js'
+import {socketServer, handlers, reemiters} from './utils/websocket.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,4 +64,4 @@ const httpServer = app.listen(PORT,()=>{
     console.log(`Connected to port ${PORT}`)
 })
 
-socketServer(httpServer, handlers)
+socketServer(httpServer, handlers, reemiters)

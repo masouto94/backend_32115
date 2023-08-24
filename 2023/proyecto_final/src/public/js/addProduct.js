@@ -27,6 +27,8 @@ const fetchData = async (data, url, method="GET", contentType="application/json"
 
 const addProduct =  (e) =>{
     const products = document.querySelector("#products")
+    let productId = parseInt(products.options[products.selectedIndex].value)
+    // socket.emit('addProduct', productId)
     productIds.push(products.options[products.selectedIndex].value)
     selectedQuantity.textContent = parseInt(selectedQuantity.textContent) + 1
 }
@@ -40,8 +42,8 @@ const createCart =  async (e) =>{
     await fetchData(JSON.stringify({selectedProducts:productIds}), '/carts/create', "POST")
     productIds = []
     selectedQuantity.textContent = 0
-    alert('Successfully created cart')
     socket.emit('createCart')
+    // alert('Successfully created cart')
 }
 
 const updateCart =  async (e) =>{
@@ -52,31 +54,43 @@ const updateCart =  async (e) =>{
   alert(`Successfully added product ${productToAdd} to cart: ${cartToUpdate}`)
 }
 
-const renderCarts =  async (e) =>{
-  const carts = await fetch('/carts',{
-    method:'GET'
-  }).then(r=>r.json())
-  
-  const templates = carts.map((cart)=>{
+const renderCarts =  (e) =>{
+  // const carts = await fetch('/carts',{
+  //   method:'GET'
+  // }).then(r=>r.json())
+  console.log(e)
+  const templates = e.map((cart)=>{
     let template = `<div class="cart" id="cart_${cart.id}">`
     let prods=``
     for (const prod of cart.products) {
-      prods += `
-      <h3>${prod.title}</h3>
-      <h3>${prod.quantity}</h3>
-      `
+      prods += `<h3>${prod.title}: ${prod.quantity}</h3>`
     }
     template += prods
-    template += `<h4>Price:${cart.price}</h4>
-    </div>`
+    template += `<h4>Price:${cart.price}</h4></div>`
     return template
   })
-
-  currentCarts.innerHTML = templates
+  currentCarts.innerHTML = templates.join('\n')
 }
 
-socket.on('updateCarts',renderCarts)
+const renderProduct =  (prod) =>{
+  return  
+  // const templates = carts.map((cart)=>{
+  //   let template = `<div class="cart" id="cart_${cart.id}">`
+  //   let prods=``
+  //   for (const prod of cart.products) {
+  //     prods += `<h3>${prod.title}: ${prod.quantity}</h3>`
+  //   }
+  //   template += prods
+  //   template += `<h4>Price:${cart.price}</h4></div>`
+  //   return template
+  // })
+  // currentCarts.innerHTML = templates.join('\n')
+}
+
 addProductBtn.addEventListener('click', addProduct)
 cartForm.addEventListener('submit', createCart)
 updateCartForm.addEventListener('submit', updateCart)
-
+socket.on('updateCarts', (carts) => {
+  console.log(carts)
+  renderCarts(carts)
+})
