@@ -1,20 +1,15 @@
 import {Server} from 'socket.io'
-import {productsRouter, productManager} from '../routes/products.router.js'
-import {cartRouter, cartManager} from '../routes/cart.router.js'
+import { productManager } from '../routes/products.router.js'
+// import { cartManager } from '../routes/cart.router.js'
+import { CartManager } from '../model/CartManager.js'
+const cartManager = new CartManager("src/database/carts.json")
+
 class SocketHandler{
     constructor(event, callback=undefined, target=undefined,args=undefined){
         this.event = event
         this.callback = callback
         this.target = target
         this.args = args
-    }
-
-    reemit(socket){
-        if(this.callback){
-            console.log(this.event)
-            socket.on(this.event, this.callback)
-        }
-    
     }
 }
 const greeting = (message) => {
@@ -37,21 +32,20 @@ const renderMessageHandler = () => {
 
 const renderCartsHandler = async () => {
     const carts = await cartManager.getCarts()
-    return new SocketHandler('createCart', undefined,'updateCarts', carts)
+    return new SocketHandler('createCart', undefined,'reRenderCarts', carts)
 }
 
 const handlers = [greetingHandler(), renderMessageHandler()]
 const reemiters = [await renderCartsHandler()]
-const socketServer = (httpServer, handlers) => {
+const socketServer = (httpServer, handlers,reemiters) => {
     const socket = new Server(httpServer)
     socket.on('connection', (conn) =>{
         for (const handler of handlers) {
             conn.on(handler.event, handler.callback)
         }
         for (const reemiter of reemiters) {
-            conn.on(reemiter.event, async (e) => {
-                console.log(reemiter.args)
-                conn.emit(reemiter.target,reemiter.args)
+            conn.on(reemiter.event,  () => {
+                conn.emit(reemiter.target, reemiter.args)
             })
         }
         

@@ -42,7 +42,7 @@ const createCart =  async (e) =>{
     await fetchData(JSON.stringify({selectedProducts:productIds}), '/carts/create', "POST")
     productIds = []
     selectedQuantity.textContent = 0
-    socket.emit('createCart')
+    
     // alert('Successfully created cart')
 }
 
@@ -88,9 +88,9 @@ const renderProduct =  (prod) =>{
 }
 
 addProductBtn.addEventListener('click', addProduct)
-cartForm.addEventListener('submit', createCart)
-updateCartForm.addEventListener('submit', updateCart)
-socket.on('updateCarts', (carts) => {
-  console.log(carts)
-  renderCarts(carts)
+cartForm.addEventListener('submit', async(e) => {
+  await createCart(e)
+  socket.emit('createCart')
 })
+updateCartForm.addEventListener('submit', updateCart)
+socket.on('reRenderCarts', renderCarts)

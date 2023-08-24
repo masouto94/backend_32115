@@ -46,4 +46,5 @@ li{
     border-color:  #313638 ;
     width: 6vw;
     text-align: center;
+    height: max-content;
 }
