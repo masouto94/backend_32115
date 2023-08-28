@@ -30,19 +30,26 @@ const renderMessageHandler = () => {
     return new SocketHandler('inputMessage', renderMessage)
 }
 
-const renderCartsHandler = async () => {
+
+
+const renderCartsServer = async () => {
     const carts = await cartManager.getCarts()
-    return new SocketHandler('createCart', undefined,'reRenderCarts', carts)
+    return carts
 }
 
 const handlers = [greetingHandler(), renderMessageHandler()]
-const reemiters = [await renderCartsHandler()]
+const reemiters = []
 const socketServer = (httpServer, handlers,reemiters) => {
     const socket = new Server(httpServer)
     socket.on('connection', (conn) =>{
         for (const handler of handlers) {
             conn.on(handler.event, handler.callback)
         }
+        conn.on('createCart', async () =>{
+            const carts = await renderCartsServer()
+            socket.emit( 'createCart',carts)
+        }
+            )
         for (const reemiter of reemiters) {
             conn.on(reemiter.event,  () => {
                 conn.emit(reemiter.target, reemiter.args)

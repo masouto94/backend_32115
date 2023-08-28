@@ -1,6 +1,5 @@
 const socket = io()
 socket.emit('greeting','Bienvenido al websocket')
-
 const selectedQuantity = document.querySelector("#selectedProductsQuantity")
 const cartForm = document.querySelector("#cartForm")
 const addProductBtn = document.querySelector("#addProduct")
@@ -54,12 +53,11 @@ const updateCart =  async (e) =>{
   alert(`Successfully added product ${productToAdd} to cart: ${cartToUpdate}`)
 }
 
-const renderCarts =  (e) =>{
+const renderCarts = async (carts) =>{
   // const carts = await fetch('/carts',{
   //   method:'GET'
   // }).then(r=>r.json())
-  console.log(e)
-  const templates = e.map((cart)=>{
+  const templates = carts.map((cart)=>{
     let template = `<div class="cart" id="cart_${cart.id}">`
     let prods=``
     for (const prod of cart.products) {
@@ -91,6 +89,9 @@ addProductBtn.addEventListener('click', addProduct)
 cartForm.addEventListener('submit', async(e) => {
   await createCart(e)
   socket.emit('createCart')
+  
+
 })
 updateCartForm.addEventListener('submit', updateCart)
-socket.on('reRenderCarts', renderCarts)
+// socket.on('reRenderCarts', renderCarts)
+socket.on('createCart', renderCarts)
