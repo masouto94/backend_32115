@@ -1,4 +1,5 @@
-import { Product } from "./Product.js"
+import { Product, productSchema } from "./Product.js"
+import {Schema, model} from 'mongoose'
 
 class Cart {
     constructor(products, price = undefined, id = undefined) {
@@ -72,7 +73,17 @@ class Cart {
 
 }
 
+const cartSchema = new Schema({
+    products: [productSchema],
+    price:{
+        type: Number,
+        required: true
+    }
+})
 
+cartSchema.loadClass(Cart)
+const cartModel = model('Cart', cartSchema)
 export {
-    Cart
+    Cart,
+    cartModel
 }

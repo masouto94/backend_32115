@@ -1,3 +1,4 @@
+import {Schema, model} from 'mongoose'
 class MissingPropertyError extends Error {
     constructor(message) {
         super(message)
@@ -37,8 +38,36 @@ class Product {
 
 }
 
-
+const productSchema = new Schema({
+    title:{
+        type: String,
+        required: true
+    },
+    code:{
+        type: Number,
+        required: true
+    },
+    price:{
+        type: Number,
+        required: true
+    },
+    stock:{
+        type: Number,
+        required: true
+    },
+    description:{
+        type: String,
+        required: true
+    },
+    thumbnail:{
+        type: String,
+        required: true
+    }
+})
+const productModel = model('Product', productSchema)
 export {
     MissingPropertyError,
-    Product
+    Product,
+    productSchema,
+    productModel
 }
