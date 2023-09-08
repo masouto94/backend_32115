@@ -3,7 +3,7 @@
 <form  id="cartForm">
     <select name="select" id="products">
     {{#each products}}
-    <option value={{this.id}}>{{this.title}}</option>
+    <option value={{this._id}}>{{this.title}}</option>
     {{/each}}
     </select>
     <input id="addProduct" type="button"  value="Add Product">
@@ -13,7 +13,7 @@
 <div id="currentCarts">
     {{#each carts}}
     {{#with this as |cart|}}
-    <div class="cart" id="cart_{{cart.id}}">
+    <div class="cart" id="cart_{{cart._id}}">
         {{#each cart.products}}
             <h3>{{this.title}}: {{this.quantity}}</h3>
         {{/each}}

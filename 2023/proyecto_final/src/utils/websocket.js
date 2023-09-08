@@ -31,10 +31,17 @@ const renderMessageHandler = () => {
 }
 
 
+import {  cartModel } from '../model/Cart.js'
 
 const renderCartsServer = async () => {
-    const carts = await cartManager.getCarts()
+    // With filesystem
+    // const carts = await cartManager.getCarts()
+    // return carts
+
+    // With mongoose
+    const carts = await cartModel.find().lean()
     return carts
+    
 }
 
 const handlers = [greetingHandler(), renderMessageHandler()]

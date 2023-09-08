@@ -53,10 +53,7 @@ const updateCart =  async (e) =>{
   alert(`Successfully added product ${productToAdd} to cart: ${cartToUpdate}`)
 }
 
-const renderCarts = async (carts) =>{
-  // const carts = await fetch('/carts',{
-  //   method:'GET'
-  // }).then(r=>r.json())
+const renderCarts = async (carts) =>{  
   const templates = carts.map((cart)=>{
     let template = `<div class="cart" id="cart_${cart.id}">`
     let prods=``

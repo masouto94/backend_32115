@@ -75,15 +75,12 @@ class Cart {
 
 const cartSchema = new Schema({
     products: [productSchema],
-    price:{
-        type: Number,
-        required: true
-    }
+
 })
 
-cartSchema.loadClass(Cart)
 const cartModel = model('Cart', cartSchema)
 export {
     Cart,
+    cartSchema,
     cartModel
 }
