@@ -40,6 +40,9 @@ const renderCartsServer = async () => {
 
     // With mongoose
     const carts = await cartModel.find().lean()
+    
+    console.log("WWW",carts[0].products)
+    console.log("WWW",JSON.stringify(carts[0].products))
     return carts
     
 }

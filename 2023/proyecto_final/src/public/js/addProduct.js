@@ -55,10 +55,10 @@ const updateCart =  async (e) =>{
 
 const renderCarts = async (carts) =>{  
   const templates = carts.map((cart)=>{
-    let template = `<div class="cart" id="cart_${cart.id}">`
+    let template = `<div class="cart" id="cart_${cart._id}">`
     let prods=``
     for (const prod of cart.products) {
-      prods += `<h3>${prod.title}: ${prod.quantity}</h3>`
+      prods += `<h3>${prod.id_prod.title}: ${prod.quantity}</h3>`
     }
     template += prods
     template += `<h4>Price:${cart.price}</h4></div>`

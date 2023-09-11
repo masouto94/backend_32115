@@ -74,8 +74,35 @@ class Cart {
 }
 
 const cartSchema = new Schema({
-    products: [productSchema],
+    products: {
+        type: [
+            {
+                id_prod: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Product',
+                    required: true
+                },
+                quantity: {
+                    type: Number,
+                    required: true
+                }
+            }
+        ],
+        default: function () {
+            return [];
+        }
+    }
 
+})
+
+// cartSchema.pre('save', function () {
+//     this.populate('products.id_prod')
+// })
+cartSchema.pre('findOne', function () {
+    this.populate('products.id_prod')
+})
+cartSchema.pre('find', function () {
+    this.populate('products.id_prod')
 })
 
 const cartModel = model('Cart', cartSchema)

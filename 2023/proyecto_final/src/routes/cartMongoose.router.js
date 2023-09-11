@@ -62,20 +62,12 @@ cartRouterMongoose.post('/create',  async (req, res) =>{
           productAggregation[prod]=quantity    
           return
      })
-     const products = await productModel.find({
-          '_id':{
-               $in: selectedProducts.map(id => new mongoose.Types.ObjectId(id))
-          }     
-     })
-     const newProds = products.map((prod)=>{
-          const stringID = prod._id.toString()
-          if(Object.keys(productAggregation).includes(stringID)){
-               return {...prod, quantity:productAggregation[stringID]}
-          }
-          return prod
-     })
+     const toAdd = []
+     for (const [prod, quantity] of Object.entries(productAggregation)){
+          toAdd.push({id_prod:prod,quantity:quantity})
+     }
      const cart = await cartModel.create({
-          products:newProds
+          products:toAdd
      })
 
      return res.status(200).send({message:'Successfully created cart',cart:cart})

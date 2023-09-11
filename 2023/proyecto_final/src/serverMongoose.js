@@ -55,6 +55,9 @@ app.get('/currentProducts',(req, res) =>{
 app.get('/cartActions', async (req, res) =>{
     const prods = await productModel.find().lean()
     const carts = await cartModel.find().lean()
+    carts[0].products.forEach((p)=>{
+        console.log(p)
+    })
     res.status(200).render("cartActions",
     {
         layout: 'main',

@@ -45,9 +45,8 @@ const productSchema = new Schema({
     },
     code:{
         type: Number,
-        required: true,
-        unique: true
-    },
+        required: true
+        },
     price:{
         type: Number,
         required: true
