@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8080
 
 const app = express()
 
-mongoose.connect("mongodb+srv://masouto94:<password>@cluster0.gld3sot.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://masouto94:dejameentrarmongo@cluster0.gld3sot.mongodb.net/?retryWrites=true&w=majority")
 .then(() => console.log('Connected to DB'))
 .catch((e) => console.log(e))
 
@@ -55,9 +55,6 @@ app.get('/currentProducts',(req, res) =>{
 app.get('/cartActions', async (req, res) =>{
     const prods = await productModel.find().lean()
     const carts = await cartModel.find().lean()
-    carts[0].products.forEach((p)=>{
-        console.log(p)
-    })
     res.status(200).render("cartActions",
     {
         layout: 'main',
