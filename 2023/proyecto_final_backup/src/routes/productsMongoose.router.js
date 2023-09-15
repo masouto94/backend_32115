@@ -2,9 +2,9 @@ import {Router} from 'express'
 import {  productModel, MissingPropertyError } from '../model/Product.js'
 
 
-const productsRouterMongoose = Router()
+const productsRouter = Router()
 
-productsRouterMongoose.get('/', async (req, res) =>{
+productsRouter.get('/', async (req, res) =>{
     try{
         if(req.query.limit){
             const prods = await productModel.find().limit(req.query.limit)
@@ -18,7 +18,7 @@ productsRouterMongoose.get('/', async (req, res) =>{
     }
 })
     
-productsRouterMongoose.get('/:id', async (req, res) =>{
+productsRouter.get('/:id', async (req, res) =>{
     const {id} = req.params
     try {
         const prods = await productModel.findById(id)
@@ -32,7 +32,7 @@ productsRouterMongoose.get('/:id', async (req, res) =>{
     }
 })
 
-productsRouterMongoose.post('/', async (req, res) =>{
+productsRouter.post('/', async (req, res) =>{
     const {productId} = req.body
     try {
         const prods = await productModel.findById(productId)
@@ -46,7 +46,7 @@ productsRouterMongoose.post('/', async (req, res) =>{
     }
 })
 
-productsRouterMongoose.post('/create', async (req, res) =>{
+productsRouter.post('/create', async (req, res) =>{
     const {title,code,price,stock,description,thumbnail} = req.body
     try {
         const toAdd = await productModel.create({
@@ -63,7 +63,7 @@ productsRouterMongoose.post('/create', async (req, res) =>{
     }
 })
 
-productsRouterMongoose.put('/:id', async (req, res) =>{
+productsRouter.put('/:id', async (req, res) =>{
     const { id } = req.params
     try {
         const prod = await productModel.findByIdAndUpdate(id,req.body)
@@ -76,7 +76,7 @@ productsRouterMongoose.put('/:id', async (req, res) =>{
     }
 })
 
-productsRouterMongoose.delete('/:id', async (req, res) =>{
+productsRouter.delete('/:id', async (req, res) =>{
     const { id } = req.params
     try {
         const prod = await productModel.findByIdAndDelete(id)
@@ -89,7 +89,7 @@ productsRouterMongoose.delete('/:id', async (req, res) =>{
     }
 })
 
-productsRouterMongoose.get('/currentProducts', async (req, res) =>{
+productsRouter.get('/currentProducts', async (req, res) =>{
     try{
         if(req.query.limit){
             const prods = await productModel.find().limit(req.query.limit)
@@ -104,5 +104,5 @@ productsRouterMongoose.get('/currentProducts', async (req, res) =>{
 })
 export {
     productModel,
-    productsRouterMongoose
+    productsRouter
     }

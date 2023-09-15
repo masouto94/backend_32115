@@ -1,0 +1,50 @@
+body{
+    font-family: monospace;
+}
+h1,h2{
+    color: #313638;
+    font-size:x-large;
+}
+form>input{
+    width: 10vw;
+}
+form>input[type=submit]{
+    width:5vw;
+    
+}
+.multilineForm{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+li{
+    margin-bottom: 1em;
+    list-style:georgian
+}
+
+.actionsContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 10vw;
+}
+
+#currentCarts{
+    display: grid;
+    grid-template-columns: 200px 200px;
+    height: 50vh;
+    overflow-y: scroll;
+    margin: 5vh 0;
+    width: max-content;
+}
+
+.cart{
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-color:  #313638 ;
+    width: 6vw;
+    text-align: center;
+    height: max-content;
+}

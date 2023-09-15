@@ -3,8 +3,8 @@ import path from 'path';
 import morgan from 'morgan'
 import handlebars from 'express-handlebars'
 import {fileURLToPath} from 'url';
-import {productModel,productsRouter} from './routes/products.router.js'
-import {cartModel,cartRouter} from './routes/cart.router.js'
+import {productModel,productsRouter} from './routes/productsMongoose.router.js'
+import {cartModel,cartRouter} from './routes/cartMongoose.router.js'
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
 import mongoose from 'mongoose';
 

@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon ./src/server.js"
-    },
+    "server": "nodemon ./src/server.js",
+    "serverMongoose": "nodemon ./src/serverMongoose.js"
+  },
   "author": "Matias Souto",
   "engines": {
     "node": "18.16.0"

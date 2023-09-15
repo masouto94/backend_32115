@@ -1,99 +1,108 @@
 import {Router} from 'express'
-import {  ProductManager, ProductAlreadyExistsError, KeyError, ProductNotFoundError } from '../model/ProductManager.js' 
-import {  Product } from '../model/Product.js' 
+import {  productModel } from '../model/Product.js'
 
-const productManager = new ProductManager("./src/database/products.json")
 
 const productsRouter = Router()
 
 productsRouter.get('/', async (req, res) =>{
-    if(req.query.limit){
-        const prods = await productManager.getProducts().then(r => r.slice(0,req.query.limit))
+    try{
+        if(req.query.limit){
+            const prods = await productModel.find().limit(req.query.limit)
+            return res.status(200).send(prods)
+            
+        }
+        const prods = await productModel.find()
         return res.status(200).send(prods)
-        
+    } catch (error){
+        return res.status(400).send({error: error})
     }
-    const prods = await productManager.getProducts()
-    return res.status(200).send(prods)
 })
     
 productsRouter.get('/:id', async (req, res) =>{
-    const prods = await productManager.getProducts().then(r => r.filter(prod => prod.id === parseInt(req.params.id)))
-    if(prods.length === 0){
-        return res.status(404).send({error: "Product not found", description: `Product with ID: ${req.params.id} does not exist`})
+    const {id} = req.params
+    try {
+        const prods = await productModel.findById(id)
+        if (prods.length === 0){
+            return res.status(404).send({error: "Product not found", description: `Product with ID: ${req.params.id} does not exist`})
+        }
+        return res.status(200).send(prods)
+        
+    } catch (error) {
+        return res.status(400).send({error: error})
     }
-    return res.status(200).send(prods)
 })
 
 productsRouter.post('/', async (req, res) =>{
-    const prods = await productManager.getProducts().then(r => r.filter(prod => prod.id === parseInt(req.body.productId)))
-    if(prods.length === 0){
-        return res.status(404).send({error: "Product not found", description: `Product with ID: ${req.body.productId} does not exist`})
+    const {productId} = req.body
+    try {
+        const prods = await productModel.findById(productId)
+        if (prods.length === 0){
+            return res.status(404).send({error: "Product not found", description: `Product with ID: ${productId} does not exist`})
+        }
+        return res.status(200).send(prods)
+        
+    } catch (error) {
+        return res.status(400).send({error: error})
     }
-    return res.status(200).send(prods)
 })
 
 productsRouter.post('/create', async (req, res) =>{
-    const maxId = await productManager.getMaxId() 
-    Product.setBaseId(maxId + 1)
-    const toAdd = new Product(
-        req.body.title,
-        parseInt(req.body.code),
-        parseInt(req.body.price),
-        parseInt(req.body.stock),
-        req.body.description,
-        req.body.thumbnail
-        )
-    try{
-        await productManager.addProduct(toAdd)
-        return res.status(200).send({result:"Success", description:`Added product ${toAdd.title} with id ${toAdd.id}`})
-    }catch(e) {
-        if(e instanceof ProductAlreadyExistsError){
-            res.status(409).send({error: e.name, description:`Failed to add product ${toAdd.title} with code ${toAdd.code}`})
-        }
-        else{
-            res.status(400).send({error: e.name, description:`Failed to add product`})            
-        }
+    const {title,code,price,stock,description,thumbnail} = req.body
+    try {
+        const toAdd = await productModel.create({
+            title,
+            code,
+            price,
+            stock,
+            description,
+            thumbnail
+        })
+        return res.status(200).send({result:"Success", description:`Added product ${title} with code ${code}`})
+    } catch (error) {
+        return res.status(400).send({error: error.name, message: error.message, description:`Failed to add product ${title} with code ${code}`})
     }
 })
 
 productsRouter.put('/:id', async (req, res) =>{
+    const { id } = req.params
     try {
-        const prod = await productManager.getProductById(parseInt(req.params.id))
-        const newProd = await productManager.updateProduct(prod.id, req.body)
+        const prod = await productModel.findByIdAndUpdate(id,req.body)
+        if (prod)
+            return res.status(200).send({ result:"Success", description: `Updated product ${id} with ${JSON.stringify(req.body)}` })
+        else
+            return res.status(404).send({error: "Product not found", description: `Failed to update product with ID: ${id}. Product does not exist`})
     } catch (error) {
-        if(error instanceof KeyError){
-            return res.status(400).send({error: error.name, description: error.message})
-        }
-        else if(error instanceof ProductNotFoundError){
-            return res.status(404).send({error: "Product not found", description: `Product with ID: ${req.params.id} does not exist`})
-        }
-        else{
-            return res.status(500).send({error: error.name, description: error.message})               
-        }
+        return res.status(400).send({error: error.name, message: error.message, description:`Failed to update product with ID: ${id}`})
     }
-    return res.status(200).send({description: `Successfully updated product with id: ${req.params.id}` ,prod:newProd})
 })
 
 productsRouter.delete('/:id', async (req, res) =>{
+    const { id } = req.params
     try {
-        const prods = await productManager.deleteProduct(parseInt(req.params.id))
-        return res.status(200).send({description: `Successfully deleted product with id: ${req.params.id}`})
-        
+        const prod = await productModel.findByIdAndDelete(id)
+        if (prod)
+            return res.status(200).send({ result:"Success", description: `Deleted product with ID: ${id} ` })
+        else
+            return res.status(404).send({error: "Product not found", description: `Failed to delete product with ID: ${id}. Product does not exist`})
     } catch (error) {
-        return res.status(404).send({error: "Product not found", description: `Product with ID: ${req.params.id} does not exist`})
+        return res.status(400).send({error: error.name, message: error.message, description:`Failed to delete product with ID: ${id}`})
     }
 })
 
 productsRouter.get('/currentProducts', async (req, res) =>{
-    if(req.query.limit){
-        const prods = await productManager.getProducts().then(r => r.slice(0,req.query.limit))
+    try{
+        if(req.query.limit){
+            const prods = await productModel.find().limit(req.query.limit)
+            return res.status(200).send(prods)
+            
+        }
+        const prods = await productModel.find()
         return res.status(200).send(prods)
-        
+    } catch (error){
+        return res.status(400).send({error: error})
     }
-    const prods = await productManager.getProducts()
-    return res.status(200).send(prods)
 })
 export {
-    productManager,
+    productModel,
     productsRouter
     }

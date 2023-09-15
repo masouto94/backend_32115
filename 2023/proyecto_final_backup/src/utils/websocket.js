@@ -1,5 +1,8 @@
 import {Server} from 'socket.io'
-
+import { productManager } from '../routes/products.router.js'
+// import { cartManager } from '../routes/cart.router.js'
+import { CartManager } from '../model/CartManager.js'
+const cartManager = new CartManager("src/database/carts.json")
 
 class SocketHandler{
     constructor(event, callback=undefined, target=undefined,args=undefined){
@@ -31,6 +34,11 @@ const renderMessageHandler = () => {
 import {  cartModel } from '../model/Cart.js'
 
 const renderCartsServer = async () => {
+    // With filesystem
+    // const carts = await cartManager.getCarts()
+    // return carts
+
+    // With mongoose
     const carts = await cartModel.find().lean()
     return carts
     

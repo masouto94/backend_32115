@@ -3,14 +3,14 @@ import {  cartModel } from '../model/Cart.js'
 import {  productModel } from '../model/Product.js'
 import mongoose from 'mongoose'
 
-const cartRouterMongoose = Router()
+const cartRouter = Router()
 
-cartRouterMongoose.get('/',  async (req, res) =>{
+cartRouter.get('/',  async (req, res) =>{
     const carts = await cartModel.find()
      return res.status(200).send(carts)
 })
 
-cartRouterMongoose.get('/:cid',  async (req, res) =>{
+cartRouter.get('/:cid',  async (req, res) =>{
      try {
           const cart = await cartModel.findById(req.params.cid)
           if(cart){
@@ -23,7 +23,7 @@ cartRouterMongoose.get('/:cid',  async (req, res) =>{
      }
  })
 
- cartRouterMongoose.post('/:cid/product/:pid',  async (req, res) =>{
+ cartRouter.post('/:cid/product/:pid',  async (req, res) =>{
      const { cid, pid } = req.params
      const { quantity } = req.body
 
@@ -37,7 +37,7 @@ cartRouterMongoose.get('/:cid',  async (req, res) =>{
                   if (index != -1) {
                       cart.products[index].quantity = quantity 
                   } else {
-                      cart.products.push({ id_prod: pid, quantity: quantity })
+                      cart.products.push({ prod_id: pid, quantity: quantity })
                   }
                   await cartModel.findByIdAndUpdate(cid, cart) 
                   res.status(200).send({ result: 'Success', message: `Added product with ID: ${pid} to cart ${cid}` })
@@ -53,7 +53,7 @@ cartRouterMongoose.get('/:cid',  async (req, res) =>{
       }
  })
 
-cartRouterMongoose.post('/create',  async (req, res) =>{
+cartRouter.post('/create',  async (req, res) =>{
      const {selectedProducts} = req.body
      const productSet = new Set(selectedProducts)
      const productAggregation = {}
@@ -64,7 +64,7 @@ cartRouterMongoose.post('/create',  async (req, res) =>{
      })
      const toAdd = []
      for (const [prod, quantity] of Object.entries(productAggregation)){
-          toAdd.push({id_prod:prod,quantity:quantity})
+          toAdd.push({prod_id:prod,quantity:quantity})
      }
      const cart = await cartModel.create({
           products:toAdd
@@ -73,6 +73,6 @@ cartRouterMongoose.post('/create',  async (req, res) =>{
      return res.status(200).send({message:'Successfully created cart',cart:cart})
 })
 export {
-     cartRouterMongoose,
+     cartRouter,
      cartModel
 } 
