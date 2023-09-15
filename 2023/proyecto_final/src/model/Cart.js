@@ -1,5 +1,6 @@
 import { productSchema } from "./Product.js"
 import {Schema, model} from 'mongoose'
+import {mongoosePaginate} from 'mongoose-paginate-v2'
 
 const cartSchema = new Schema({
     products: {
@@ -47,7 +48,9 @@ cartSchema.pre('find', function () {
     this.populate('products.prod_id')
 })
 
+cartSchema.plugin(mongoosePaginate)
 const cartModel = model('Cart', cartSchema)
+
 export {
     cartSchema,
     cartModel
