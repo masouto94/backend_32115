@@ -55,8 +55,15 @@ const updateCart =  async (e) =>{
   e.preventDefault()
   // const productToAdd = document.querySelector("#productIdToAdd").value
   // const cartToUpdate = document.querySelector("#cartToUpdate").value
-  // await fetchData(JSON.stringify({"cid": cartToUpdate,"pid": productToAdd}), '/carts/:cid/product/:pid', "POST")
-  alert(`Not Implemented yet. Please use postman`)
+  // const quantity = document.querySelector("#prodQuantity").value
+  // console.log(cartToUpdate,productToAdd)
+  // if(quantity){
+  //   await fetchData({quantity:parseInt(quantity)},`/carts/${cartToUpdate}/product/${productToAdd}`, "PUT")
+  // }
+  // else{
+  //   await fetch(`/carts/${cartToUpdate}/product/${productToAdd}`, {method:"PUT"})
+  // }
+  alert(`Somehow it doesn't work. Please use postman`)
 }
 
 const renderCarts = async (carts) =>{  
@@ -95,6 +102,6 @@ cartForm.addEventListener('submit', async(e) => {
   socket.emit('createCart')
 })
 
-updateCartForm.addEventListener('submit', updateCart)
+updateCartForm.addEventListener('submit', async (e) => await updateCart(e))
 socket.on('createCart', renderCarts)
 socket.on('renderProduct', renderProducts)
