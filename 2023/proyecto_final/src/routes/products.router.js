@@ -34,22 +34,11 @@ productsRouter.get('/', async (req, res) =>{
                                 console.log(`Invalid arg ${req.query[key]}`)
                                 break
                         }
-                        // if(req.query[key].toLowerCase() === 'asc'){
-                        //     sort = {'price': 'asc'}
-
-                        // } 
-                        // else if(req.query[key].toLowerCase() === 'desc'){
-                        //     sort = {'price': 'desc'}
-
-                        // }
-                        // else{
-                        //     console.log(`Invalid arg ${req.query[key]}`)
-                        // }
                         break
                     default:
                         break
                 }
-            });
+            })
         const prods = await productModel.paginate(query,{page:page, limit:limit,sort:sort})
         return res.status(200).send(prods)
         }

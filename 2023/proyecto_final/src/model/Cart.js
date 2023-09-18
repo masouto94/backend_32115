@@ -47,6 +47,9 @@ cartSchema.pre('findOne', function () {
 cartSchema.pre('find', function () {
     this.populate('products.prod_id')
 })
+cartSchema.pre('findById', function () {
+    this.populate('products.prod_id')
+})
 
 cartSchema.plugin(paginate)
 const cartModel = model('Cart', cartSchema)

@@ -30,7 +30,7 @@ li{
     width: 10vw;
 }
 
-#currentCarts{
+#currentCarts, #currentProducts > .products{
     display: grid;
     grid-template-columns: 200px 200px;
     height: 50vh;
@@ -38,8 +38,12 @@ li{
     margin: 5vh 0;
     width: max-content;
 }
-
-.cart{
+/* Override properties for this component */
+#currentProducts > .products{
+	grid-template-columns: 150px 150px;
+    height: auto;
+}
+.cart, .productBox{
     display: flex;
     flex-direction: column;
     border-style: solid;
@@ -48,3 +52,4 @@ li{
     text-align: center;
     height: max-content;
 }
+

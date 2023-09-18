@@ -9,7 +9,8 @@
     <input id="addProduct" type="button"  value="Add Product">
     <input  type="submit" value="Create Cart">
 </form>
-<h3>Selected products <span id="selectedProductsQuantity">0</span></h3>
+<div id="currentProducts"></div>
+<h3>Carts</h3>
 <div id="currentCarts">
     {{#each carts}}
     {{#with this as |cart|}}
