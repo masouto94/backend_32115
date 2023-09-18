@@ -6,11 +6,55 @@ const productsRouter = Router()
 
 productsRouter.get('/', async (req, res) =>{
     try{
-        if(req.query.limit){
-            const prods = await productModel.find().limit(req.query.limit)
-            return res.status(200).send(prods)
-            
+        let limit = 10
+        let page = 1
+        let query = {}
+        let sort = {'_id': 'asc'}
+        if(req.query){
+            Object.keys(req.query).forEach(key => {
+                switch (key)  {
+                    case 'limit':
+                        limit = req.query[key]
+                        break
+                    case 'page':
+                        page = req.query[key]    
+                        break
+                    case 'query':
+                        query = req.query[key]
+                        break
+                    case 'sort':
+                        switch (req.query[key].toLowerCase()) {
+                            case 'asc':
+                                sort = {'price': 'asc'}
+                                break
+                            case 'desc':
+                                sort = {'price': 'desc'}
+                                break
+                            default:
+                                console.log(`Invalid arg ${req.query[key]}`)
+                                break
+                        }
+                        // if(req.query[key].toLowerCase() === 'asc'){
+                        //     sort = {'price': 'asc'}
+
+                        // } 
+                        // else if(req.query[key].toLowerCase() === 'desc'){
+                        //     sort = {'price': 'desc'}
+
+                        // }
+                        // else{
+                        //     console.log(`Invalid arg ${req.query[key]}`)
+                        // }
+                        break
+                    default:
+                        break
+                }
+            });
+        const prods = await productModel.paginate(query,{page:page, limit:limit,sort:sort})
+        return res.status(200).send(prods)
         }
+
+
         const prods = await productModel.find()
         return res.status(200).send(prods)
     } catch (error){
