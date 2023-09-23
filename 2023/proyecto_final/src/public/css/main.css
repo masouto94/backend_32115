@@ -53,3 +53,7 @@ li{
     height: max-content;
 }
 
+.product > img {
+    height: 200px;
+    width: 250px;
+}

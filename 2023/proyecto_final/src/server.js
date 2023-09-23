@@ -6,6 +6,7 @@ import handlebars from 'express-handlebars'
 import {fileURLToPath} from 'url';
 import {productModel,productsRouter} from './routes/products.router.js'
 import {cartModel,cartRouter} from './routes/cart.router.js'
+import { userModel,userRouter } from './routes/user.router.js'
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
 import mongoose from 'mongoose';
 
@@ -30,6 +31,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'))
 app.use('/products', productsRouter)
 app.use('/carts', cartRouter)
+app.use('/user', userRouter)
 
 
 app.get('/',(req, res) =>{
@@ -40,16 +42,19 @@ app.get('/productActions',(req, res) =>{
     res.status(200).render("productActions",
     {
         layout: 'main',
-        title: 'Product actions'
+        title: 'Product actions',
+        socketHandler: "realtimeProducts"
     })
 })
 
-app.get('/currentProducts',(req, res) =>{
+app.get('/currentProducts', async (req, res) =>{
+    const prods = await productModel.find().lean()
     res.status(200).render("currentProducts",
     {
         layout: 'main',
         title: 'Current products',
-        socketHandler: "websocket"
+        initialProducts: prods,
+        socketHandler: "realtimeProducts"
     })
 })
 
@@ -69,6 +74,14 @@ app.get('/cartActions', async (req, res) =>{
 
 const httpServer = app.listen(PORT,()=>{
     console.log(`Connected to port ${PORT}`)
+})
+
+app.get('/login',(req, res) =>{
+    res.status(200).render("userLogin",
+    {
+        layout: 'main',
+        title: 'Login'
+    })
 })
 
 socketServer(httpServer, handlers, reemiters)

@@ -65,6 +65,10 @@ const socketServer = (httpServer, handlers,reemiters) => {
             const prods = await  renderProductsServer(products)
             socket.emit('renderProduct', prods)
         })
+        conn.on('productsModified', async () =>{
+            const prods = await  productModel.find().lean()
+            socket.emit('productsModified', prods)
+        })
         for (const reemiter of reemiters) {
             conn.on(reemiter.event,  () => {
                 conn.emit(reemiter.target, reemiter.args)

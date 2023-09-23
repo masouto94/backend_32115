@@ -1,3 +1,17 @@
-<h1>current products</h1>
+<h1>Current products</h1>
+<div id="currentProducts">
+    {{#each initialProducts}}
+    <div class="product" id="product_{{this._id}}">
+        <h2>{{this.title}}</h2>
+        <img src={{this.thumbnail}} alt="" srcset="">
+        <ul>
+            <li>{{this.code}}</li>
+            <li>{{this.price}}</li>
+            <li>{{this.stock}}</li>
+        </ul>
+        <p>{{this.description}}</p>
+    </div>
+    {{/each}}
+</div>
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="js/{{socketHandler}}.js"></script>
