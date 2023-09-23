@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'
 import path from 'path';
 import morgan from 'morgan'
@@ -15,7 +16,7 @@ const PORT = process.env.PORT || 8080
 
 const app = express()
 
-mongoose.connect("mongodb+srv://masouto94:<password>@cluster0.gld3sot.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log('Connected to DB'))
 .catch((e) => console.log(e))
 
