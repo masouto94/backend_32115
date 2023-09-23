@@ -1,0 +1,12 @@
+<div>
+    {{>actions}}
+    <ul>
+        <li>{{>carts/allCarts}}</li>
+        <li>{{>carts/createCart}}</li>
+        <li>{{>carts/addProductToCart}}</li>
+    </ul>
+    {{>back}}
+</div>
+<script src="/socket.io/socket.io.js"></script>
+{{!-- <script type="text/javascript" src="js/{{socketHandler}}.js"></script> --}}
+<script type="text/javascript" src="js/{{addProductHandler}}.js"></script>

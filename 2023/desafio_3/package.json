@@ -1,0 +1,19 @@
+{
+  "name": "desafio_3",
+  "version": "1.0.0",
+  "description": "First server",
+  "main": "NodeServer.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon ./src/NodeServer.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

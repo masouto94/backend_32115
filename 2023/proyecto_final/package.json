@@ -1,0 +1,31 @@
+{
+  "name": "proyecto_final",
+  "version": "1.0.0",
+  "description": "Backend Ecommerce para proyecto final de coderhouse",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon ./src/server.js"
+  },
+  "author": "Matias Souto",
+  "engines": {
+    "node": "18.16.0"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.2",
+    "express-session": "^1.17.3",
+    "mongoose": "^7.5.0",
+    "mongoose-paginate-v2": "^1.7.31",
+    "multer": "^1.4.5-lts.1",
+    "session-file-store": "^1.5.0",
+    "socket.io": "^4.7.2"
+  }
+}
