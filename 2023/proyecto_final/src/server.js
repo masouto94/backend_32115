@@ -43,7 +43,7 @@ app.get('/productActions',(req, res) =>{
     {
         layout: 'main',
         title: 'Product actions',
-        socketHandler: "realtimeProducts"
+        socketHandler: "createProduct"
     })
 })
 
