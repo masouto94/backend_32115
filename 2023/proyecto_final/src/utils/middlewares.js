@@ -10,6 +10,16 @@ const storage = multer.diskStorage({
 })
 const upload = multer({storage:storage})
 
+
+const auth = (req, res, next) => {
+    const {email, pass} = req.body
+    if(email === 'admin@adminCoder.com' && pass === 'adminCod3r123' ){
+        return next()
+    }
+    res.status(401).send('Not Admin')
+}
+
 export {
-    upload
+    upload,
+    auth
 }

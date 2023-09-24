@@ -19,12 +19,17 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    password:{
+        type: String,
+        required: true
+    },
     age:{
         type: Number,
         required: true
     },
-    profile_photo:{
-        type: String
+    role:{
+        type: String,
+        default: 'user'
     }
 })
 userSchema.pre('save', function(next){

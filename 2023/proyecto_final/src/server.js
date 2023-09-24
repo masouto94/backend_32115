@@ -8,7 +8,10 @@ import {productModel,productsRouter} from './routes/products.router.js'
 import {cartModel,cartRouter} from './routes/cart.router.js'
 import { userModel,userRouter } from './routes/user.router.js'
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
+import cookieParser from 'cookie-parser'
+import MongoStore from 'connect-mongo'
+import session from 'express-session'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,6 +32,22 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'))
+app.use(cookieParser())
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
+        ttl: 60
+        }),
+        secret: process.env.SESSION_SECRET,
+        resave: false, 
+        saveUninitialized: false
+    }
+
+))
 app.use('/products', productsRouter)
 app.use('/carts', cartRouter)
 app.use('/user', userRouter)
@@ -66,7 +85,7 @@ app.get('/cartActions', async (req, res) =>{
         layout: 'main',
         title: 'Cart actions',
         products: prods,
-        addProductHandler: 'addProduct',
+        addProductHandler: 'addProductToCart',
         carts: carts
     })
 })
