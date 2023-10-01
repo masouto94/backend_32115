@@ -7,9 +7,11 @@ import { userModel } from '../model/User.js'
 
 
 const initPassport = () => {
-    passport.use('register', localStrategies.registerUser)
+    passport.use('register', localStrategies.registerUser),
+    passport.use('login', localStrategies.loginUser)
 }
 
 export{
+    passport,
     initPassport
 }

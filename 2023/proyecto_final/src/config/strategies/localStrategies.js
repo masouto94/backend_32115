@@ -1,5 +1,5 @@
 import local from 'passport-local'
-import passport from 'passport'
+import {hashPassword, validateHash} from '../../utils/encrypter.js' 
 import { userModel } from '../../model/User.js'
 
 const LocalStrategy = local.Strategy
@@ -20,7 +20,7 @@ const registerUser = new LocalStrategy(
 
             //Crear usuario
 
-            const passwordHash = createHash(password)
+            const passwordHash = hashPassword(password)
             const userCreated = await userModel.create({
                 first_name: first_name,
                 last_name: last_name,
@@ -36,7 +36,27 @@ const registerUser = new LocalStrategy(
         }
     })
 
+const loginUser = new LocalStrategy(
+    { usernameField: 'email' }, async (username, password, done) => {
+        try {
+            const user = await userModel.findOne({ email: username })
+
+            if (!user) {
+                return done(null, false)
+            }
+
+            if (validateHash(password, user.password)) {
+                return done(null, user)
+            }
+
+            return done(null, false)
+
+        } catch (error) {
+            return done(error)
+        }
+    })
 export {
     LocalStrategy,
-    registerUser
+    registerUser,
+    loginUser
 }

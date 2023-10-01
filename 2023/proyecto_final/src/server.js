@@ -8,6 +8,7 @@ import {productModel,productsRouter} from './routes/products.router.js'
 import {cartModel,cartRouter} from './routes/cart.router.js'
 import { userModel,userRouter } from './routes/user.router.js'
 import { sessionRouter } from './routes/session.router.js'
+import { initPassport, passport } from './config/passport.js'
 
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
 import mongoose from 'mongoose'
@@ -50,6 +51,9 @@ app.use(session({
     }
 
 ))
+initPassport()
+app.use(passport.initialize())
+app.use(passport.session())
 app.use('/products', productsRouter)
 app.use('/carts', cartRouter)
 app.use('/users', userRouter)

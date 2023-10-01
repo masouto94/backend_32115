@@ -1,22 +1,36 @@
 import { Router } from "express"
 import { userModel } from "../model/User.js"
 import {auth} from '../utils/middlewares.js'
-import {initPassport} from '../config/passport.js'
+import {passport} from '../config/passport.js'
 const sessionRouter = Router()
 
-sessionRouter.post('/register', async (req,res) =>{
-    const { first_name, last_name, email, password, age } = req.body
-    if(await userModel.findOne({email:email})){
-        res.status(400).send(`User with email ${email} already exist`)
-    }
+
+sessionRouter.post('/register', passport.authenticate('register'),async (req,res) =>{
     try {
-        const user = await userModel.create({ first_name, last_name, email, password, age })
-        console.log({ response: 'OK', message: user })
+        if (!req.user) {
+            return res.status(400).send({ mensaje: "Usuario ya existente" })
+        }
+
+        res.status(200).send({ mensaje: 'Usuario registrado' })
     } catch (error) {
-        console.log({ response: 'Failed to create user', message: error })
+        res.status(500).send({ mensaje: `Error al registrar usuario ${error}` })
     }
-    res.status(200).redirect('/productActions')
 })
+    
+
+// sessionRouter.post('/register', async (req,res) =>{
+//     const { first_name, last_name, email, password, age } = req.body
+//     if(await userModel.findOne({email:email})){
+//         res.status(400).send(`User with email ${email} already exist`)
+//     }
+//     try {
+//         const user = await userModel.create({ first_name, last_name, email, password, age })
+//         console.log({ response: 'OK', message: user })
+//     } catch (error) {
+//         console.log({ response: 'Failed to create user', message: error })
+//     }
+//     res.status(200).redirect('/productActions')
+// })
 
 sessionRouter.post('/login', async (req,res) =>{
     const { email, password } = req.body
