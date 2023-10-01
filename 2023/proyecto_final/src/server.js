@@ -7,6 +7,8 @@ import {fileURLToPath} from 'url';
 import {productModel,productsRouter} from './routes/products.router.js'
 import {cartModel,cartRouter} from './routes/cart.router.js'
 import { userModel,userRouter } from './routes/user.router.js'
+import { sessionRouter } from './routes/session.router.js'
+
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
@@ -50,7 +52,8 @@ app.use(session({
 ))
 app.use('/products', productsRouter)
 app.use('/carts', cartRouter)
-app.use('/user', userRouter)
+app.use('/users', userRouter)
+app.use('/sessions', sessionRouter)
 
 
 app.get('/',(req, res) =>{

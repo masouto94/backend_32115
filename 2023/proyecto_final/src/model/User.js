@@ -34,7 +34,7 @@ const userSchema = new Schema({
 })
 userSchema.pre('save', function(next){
     if(!this.user_name){
-        this.user_name = `${this.first_name}.${this.last_name}`
+        this.user_name = `${this.first_name.toLowerCase()}.${this.last_name.toLowerCase()}`
     }
     next()
 })
