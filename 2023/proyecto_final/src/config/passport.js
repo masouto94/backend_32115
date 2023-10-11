@@ -9,6 +9,15 @@ import { userModel } from '../model/User.js'
 const initPassport = () => {
     passport.use('register', localStrategies.registerUser),
     passport.use('login', localStrategies.loginUser)
+
+    passport.serializeUser((user, done) => {
+        done(null, user._id)
+    })
+
+    passport.deserializeUser(async (id, done) => {
+        const user = await userModel.findById(id)
+        done(null, user)
+    })
 }
 
 export{

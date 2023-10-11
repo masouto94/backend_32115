@@ -1,6 +1,5 @@
 import { Router } from "express"
 import { userModel } from "../model/User.js"
-import {auth} from '../utils/middlewares.js'
 import {passport} from '../config/passport.js'
 const sessionRouter = Router()
 
@@ -8,38 +7,19 @@ const sessionRouter = Router()
 sessionRouter.post('/register', passport.authenticate('register'),async (req,res) =>{
     try {
         if (!req.user) {
-            return res.status(400).send({ mensaje: "Usuario ya existente" })
+            return res.status(401).send({ mensaje: `User with email ${req.email} already exists` })
         }
 
-        res.status(200).send({ mensaje: 'Usuario registrado' })
+        res.status(200).send({ mensaje: `Welcome to our app! Your username is ${req.user.user_name}` })
     } catch (error) {
-        res.status(500).send({ mensaje: `Error al registrar usuario ${error}` })
+        res.status(500).send({ mensaje: `Error registering user ${error}` })
     }
 })
     
-
-// sessionRouter.post('/register', async (req,res) =>{
-//     const { first_name, last_name, email, password, age } = req.body
-//     if(await userModel.findOne({email:email})){
-//         res.status(400).send(`User with email ${email} already exist`)
-//     }
-//     try {
-//         const user = await userModel.create({ first_name, last_name, email, password, age })
-//         console.log({ response: 'OK', message: user })
-//     } catch (error) {
-//         console.log({ response: 'Failed to create user', message: error })
-//     }
-//     res.status(200).redirect('/productActions')
-// })
-
-sessionRouter.post('/login', async (req,res) =>{
-    const { email, password } = req.body
-    let user = await userModel.findOne({email:email, password:password})
-    if(!user ){
-        res.status(400).send(`User with email ${email} does not exist`)
-    }
+sessionRouter.post('/login',passport.authenticate('login'), async (req,res) =>{
+    const user = req.user
     try {
-        req.session.user_name = user.user_name
+        req.session.user = user.user_name
         console.log({ response: 'OK', message: user })
     } catch (error) {
         console.log({ response: 'Failed to login', message: error })
@@ -48,12 +28,17 @@ sessionRouter.post('/login', async (req,res) =>{
 })
 
 sessionRouter.get('/logout', (req,res) =>{
-    req.session.destroy(err => {
-        if(err){
-            return res.json({status:'Logout error', body:err})
-        }
-        res.send('Logout success')
-    })
+    console.log(req.session)
+    if(req.session.user){
+        const username=req.session.user
+        return req.session.destroy(err => {
+            if(err){
+                return res.json({status:'Logout error', body:err})
+            }
+            return res.status(200).send(`User ${username} logged out`)
+        })
+    }
+    return res.status(400).send("User not logged in")
 })
 
 export {

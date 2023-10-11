@@ -11,6 +11,7 @@ import { sessionRouter } from './routes/session.router.js'
 import { initPassport, passport } from './config/passport.js'
 
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
+import {auth,loggedIn} from './utils/middlewares.js'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
@@ -59,12 +60,11 @@ app.use('/carts', cartRouter)
 app.use('/users', userRouter)
 app.use('/sessions', sessionRouter)
 
-
-app.get('/',(req, res) =>{
+app.get('/', loggedIn, (req, res) =>{
     res.status(200).render("index.handlebars")
 })
 
-app.get('/productActions',(req, res) =>{
+app.get('/productActions', loggedIn, (req, res) =>{
     res.status(200).render("productActions",
     {
         layout: 'main',
@@ -73,7 +73,7 @@ app.get('/productActions',(req, res) =>{
     })
 })
 
-app.get('/currentProducts', async (req, res) =>{
+app.get('/currentProducts', loggedIn, async (req, res) =>{
     const prods = await productModel.find().lean()
     res.status(200).render("currentProducts",
     {
@@ -84,7 +84,7 @@ app.get('/currentProducts', async (req, res) =>{
     })
 })
 
-app.get('/cartActions', async (req, res) =>{
+app.get('/cartActions', loggedIn, async (req, res) =>{
     const prods = await productModel.find().lean()
     const carts = await cartModel.find().lean()
     res.status(200).render("cartActions",

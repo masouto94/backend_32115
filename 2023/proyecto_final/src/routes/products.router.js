@@ -1,9 +1,9 @@
 import {Router} from 'express'
 import {  productModel } from '../model/Product.js'
-
+import { loggedIn } from '../utils/middlewares.js'
 
 const productsRouter = Router()
-
+productsRouter.use(loggedIn)
 productsRouter.get('/', async (req, res) =>{
     try{
         let limit = 10
