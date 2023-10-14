@@ -1,10 +1,10 @@
 import {Router} from 'express'
 import {  cartModel } from '../model/Cart.js'
 import {  productModel } from '../model/Product.js'
-import mongoose from 'mongoose'
+import { loggedIn } from '../utils/middlewares.js'
 
 const cartRouter = Router()
-
+cartRouter.use(loggedIn)
 cartRouter.get('/',  async (req, res) =>{
     const carts = await cartModel.find()
      return res.status(200).send(carts)

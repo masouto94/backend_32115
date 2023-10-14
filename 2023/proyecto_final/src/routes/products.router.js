@@ -1,53 +1,28 @@
 import {Router} from 'express'
 import {  productModel } from '../model/Product.js'
-
+import { loggedIn } from '../utils/middlewares.js'
 
 const productsRouter = Router()
-
+productsRouter.use(loggedIn)
 productsRouter.get('/', async (req, res) =>{
     try{
         let limit = 10
         let page = 1
-        let query = {}
+        let query = req.query.query ? JSON.parse(req.query.query) : {}
         let sort = {'_id': 'asc'}
-        if(req.query){
-            Object.keys(req.query).forEach(key => {
-                switch (key)  {
-                    case 'limit':
-                        limit = req.query[key]
-                        break
-                    case 'page':
-                        page = req.query[key]    
-                        break
-                    case 'query':
-                        query = req.query[key]
-                        break
-                    case 'sort':
-                        switch (req.query[key].toLowerCase()) {
-                            case 'asc':
-                                sort = {'price': 'asc'}
-                                break
-                            case 'desc':
-                                sort = {'price': 'desc'}
-                                break
-                            default:
-                                console.log(`Invalid arg ${req.query[key]}`)
-                                break
-                        }
-                        break
-                    default:
-                        break
-                }
-            })
-        const prods = await productModel.paginate(query,{page:page, limit:limit,sort:sort})
-        return res.status(200).send(prods)
+
+        if(req.query.sort){
+            sort = {'price': req.query.sort}
         }
-
-
-        const prods = await productModel.find()
+        const prods = await productModel.paginate( query,{
+            page: req.query.page ?? page, 
+            limit:req.query.limit ?? limit,
+            sort:sort
+        })
         return res.status(200).send(prods)
+        
     } catch (error){
-        return res.status(400).send({error: error})
+        return res.status(400).send({error: error.message})
     }
 })
     
