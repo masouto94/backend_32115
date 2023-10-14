@@ -1,5 +1,6 @@
 import {Router} from 'express'
 import {  cartModel } from '../model/Cart.js'
+import { userModel } from '../model/User.js'
 import {  productModel } from '../model/Product.js'
 import { loggedIn } from '../utils/middlewares.js'
 
@@ -103,24 +104,22 @@ cartRouter.delete('/:cid',  async (req, res) =>{
      })
 
 cartRouter.post('/create',  async (req, res) =>{
+     const userCart = await  userModel.findById(req.session.passport.user,{cart:1})
+     const cart = await cartModel.findById(userCart.cart)
      const {selectedProducts} = req.body
-     // const productSet = new Set(selectedProducts)
-     // const productAggregation = {}
-     // productSet.forEach(prod=>{
-     //      let quantity = selectedProducts.reduce((total, product) => (product == prod ? total+1 : total), 0)
-     //      productAggregation[prod]=quantity    
-     //      return
-     // })
      const toAdd = selectedProducts.map((prod)=>{ return {prod_id:prod.id, quantity:prod.quantity}})
-     // for (const [prod, quantity] of Object.entries(productAggregation)){
-     //      toAdd.push({prod_id:prod,quantity:quantity})
-     // }
-
-     const cart = await cartModel.create({
-          products:toAdd
+     toAdd.forEach(prodToAdd => {
+          const index = cart.products.findIndex(item => item.prod_id._id == prodToAdd.prod_id) 
+          if (index != -1) {
+               cart.products[index].quantity = cart.products[index].quantity + prodToAdd.quantity
+          } else {
+               
+               cart.products.push({ prod_id: prodToAdd.prod_id, quantity: prodToAdd.quantity })
+          }
+          
      })
+     await cartModel.findByIdAndUpdate(userCart.cart, cart)
 
-     return res.status(200).send({message:'Successfully created cart',cart:cart})
 })
 export {
      cartRouter,

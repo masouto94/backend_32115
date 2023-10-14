@@ -44,15 +44,7 @@ userSchema.pre('save', async function(next){
     this.cart = userCart._id
     next()
 })
-userSchema.pre('findOne', function () {
-    this.populate('cart.cart_id')
-})
-userSchema.pre('find', function () {
-    this.populate('cart.cart_id')
-})
-userSchema.pre('findById', function () {
-    this.populate('cart.cart_id')
-})
+
 userSchema.plugin(paginate)
 const userModel = model('User', userSchema)
 export {
