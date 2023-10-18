@@ -31,9 +31,14 @@ const renderMessageHandler = () => {
 import {  cartModel } from '../model/Cart.js'
 import {  productModel } from '../model/Product.js'
 
+// const renderCartsServer = async () => {
+//     const carts = await cartModel.find().lean()
+//     return carts
+    
+// }
+
 const renderCartsServer = async () => {
-    const carts = await cartModel.find().lean()
-    return carts
+    return new SocketHandler('createCart', undefined,'createCart',undefined)
     
 }
 
@@ -57,10 +62,6 @@ const socketServer = (httpServer, handlers,reemiters) => {
         for (const handler of handlers) {
             conn.on(handler.event, handler.callback)
         }
-        conn.on('createCart', async () =>{
-            const carts = await renderCartsServer()
-            socket.emit( 'createCart',carts)
-        })
         conn.on('renderProduct', async (products) =>{
             const prods = await  renderProductsServer(products)
             socket.emit('renderProduct', prods)
@@ -69,8 +70,12 @@ const socketServer = (httpServer, handlers,reemiters) => {
             const prods = await  productModel.find().lean()
             socket.emit('productsModified', prods)
         })
+        conn.on('createCart', async (e) =>{
+            socket.emit('createCart')
+        })
         for (const reemiter of reemiters) {
             conn.on(reemiter.event,  () => {
+                console.log(reemiter.target, reemiter.args)
                 conn.emit(reemiter.target, reemiter.args)
             })
         }

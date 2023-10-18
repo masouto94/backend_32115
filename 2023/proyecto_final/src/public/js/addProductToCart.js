@@ -7,9 +7,10 @@ const currentCarts = document.querySelector("#currentCarts")
 const currentProducts = document.querySelector("#currentProducts")
 
 let productIds = []
+let currentCart = {products:[]}
 
 const fetchData = async (data, url, method="GET", contentType="application/json") => {
-  await fetch(url,
+  return await fetch(url,
   {
       method: method,  
       mode: "cors",  
@@ -44,8 +45,8 @@ const createCart =  async (e) =>{
         alert('No products selected')
         return
     }
-    const ids = productIds.map(item => item.id)
-    await fetchData(JSON.stringify({selectedProducts:productIds}), '/carts/create', "POST")
+    const res = await fetchData(JSON.stringify({selectedProducts:productIds}), '/carts/create', "POST")
+    currentCart = res.carts
     productIds = []
     currentProducts.innerHTML = null
     
@@ -66,19 +67,18 @@ const updateCart =  async (e) =>{
   alert(`Somehow it doesn't work. Please use postman`)
 }
 
-const renderCarts = async (carts) =>{  
-  const templates = carts.map((cart)=>{
-    let template = `<div class="cart" id="cart_${cart._id}">`
-    let prods=``
-    for (const prod of cart.products) {
-      prods += `<h3>${prod.prod_id.title}: ${prod.quantity}</h3>`
-    }
-    template += prods
-    template += `<h4>Price:${cart.price}</h4></div>`
-    return template
-  })
-  currentCarts.innerHTML = templates.join('\n')
+const renderCarts =  (cart) =>{  
+  let template = `<div class="cart" id="cart_${cart._id}">`
+  let prods=``
+  for (const prod of cart.products) {
+    prods += `<h3>${prod.prod_id.title}: ${prod.quantity}</h3>`
+  }
+  template += prods
+  template += `<h4>Price:${cart.price}</h4></div>`
+  currentCarts.innerHTML = template
 }
+
+
 
 const renderProducts =  (prods) =>{ 
   let box =  `<h3>Products</h3><div class="products">`
@@ -100,8 +100,9 @@ addProductBtn.addEventListener('click', async (e) =>{
 cartForm.addEventListener('submit', async(e) => {
   await createCart(e)
   socket.emit('createCart')
+
 })
 
 updateCartForm.addEventListener('submit', async (e) => await updateCart(e))
-socket.on('createCart', renderCarts)
+socket.on('createCart', () => renderCarts(currentCart))
 socket.on('renderProduct', renderProducts)

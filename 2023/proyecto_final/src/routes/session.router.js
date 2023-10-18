@@ -11,6 +11,7 @@ sessionRouter.post('/register', passport.authenticate('register'),async (req,res
             return res.status(401).send({ message: `User with email ${req.email} already exists` })
         }
         req.session.user = user.user_name
+        req.session.user_cart = user.cart
         console.log(`Welcome to our app! Your username is ${user.user_name}`)
         res.status(200).redirect('/productActions')
     } catch (error) {
@@ -22,6 +23,7 @@ sessionRouter.post('/login',passport.authenticate('login'), async (req,res) =>{
     const user = req.user
     try {
         req.session.user = user.user_name
+        req.session.user_cart = user.cart
         console.log({ response: 'OK', message: user })
     } catch (error) {
         console.log({ response: 'Failed to login', message: error })

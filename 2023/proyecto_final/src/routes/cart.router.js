@@ -104,8 +104,7 @@ cartRouter.delete('/:cid',  async (req, res) =>{
      })
 
 cartRouter.post('/create',  async (req, res) =>{
-     const userCart = await  userModel.findById(req.session.passport.user,{cart:1})
-     const cart = await cartModel.findById(userCart.cart)
+     const cart = await cartModel.findById(req.session.user_cart)
      const {selectedProducts} = req.body
      const toAdd = selectedProducts.map((prod)=>{ return {prod_id:prod.id, quantity:prod.quantity}})
      toAdd.forEach(prodToAdd => {
@@ -118,7 +117,8 @@ cartRouter.post('/create',  async (req, res) =>{
           }
           
      })
-     await cartModel.findByIdAndUpdate(userCart.cart, cart)
+     await cartModel.findByIdAndUpdate(req.session.user_cart, cart)
+     return res.send({carts : cart})
 
 })
 export {
