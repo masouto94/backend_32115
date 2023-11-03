@@ -2,7 +2,7 @@ import {Router} from 'express'
 import {  cartModel } from '../model/Cart.js'
 import { ticketModel } from '../model/Ticket.js'
 import {  productModel } from '../model/Product.js'
-import { loggedIn } from '../utils/middlewares.js'
+import { isUser, loggedIn } from '../utils/middlewares.js'
 
 const cartRouter = Router()
 cartRouter.use(loggedIn)
@@ -24,7 +24,7 @@ cartRouter.get('/:cid',  async (req, res) =>{
      }
  })
 
-cartRouter.put('/:cid/product/:pid',  async (req, res) =>{
+cartRouter.put('/:cid/product/:pid',   async (req, res) =>{
 const { cid, pid } = req.params
 const {quantity} = req.body
 
@@ -103,7 +103,7 @@ cartRouter.delete('/:cid',  async (req, res) =>{
           }
      })
 
-cartRouter.post('/create',  async (req, res) =>{
+cartRouter.post('/create', isUser, async (req, res) =>{
      const cart = await cartModel.findById(req.session.user_cart)
      const {selectedProducts} = req.body
      const toAdd = selectedProducts.map((prod)=>{ return {prod_id:prod.id, quantity:prod.quantity}})
@@ -122,7 +122,7 @@ cartRouter.post('/create',  async (req, res) =>{
 
 })
 
-cartRouter.post('/purchase',  async (req, res) =>{
+cartRouter.post('/purchase',  isUser, async (req, res) =>{
      const cart = await cartModel.findById(req.session.user_cart)
      //Acá no logro agregar el precio del cart entero
      // const price=cartModel.aggregate([
@@ -163,10 +163,10 @@ cartRouter.post('/purchase',  async (req, res) =>{
      await ticketModel.create({
           purchase_datetime:now, 
           amount:price, 
-          buyer: req.session.user_email
+          buyer: req.session.user.email
      })
      return res.send({
-          carts : await ticketModel.find({"buyer": req.session.user_email})
+          carts : await ticketModel.find({"buyer": req.session.user.email})
      })
 
 })

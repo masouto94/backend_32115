@@ -11,7 +11,7 @@ import { sessionRouter } from './routes/session.router.js'
 import { initPassport, passport } from './config/passport.js'
 
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
-import {auth,loggedIn} from './utils/middlewares.js'
+import {isAdmin,isUser,loggedIn} from './utils/middlewares.js'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'

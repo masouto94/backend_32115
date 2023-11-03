@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import {  productModel } from '../model/Product.js'
-import { loggedIn } from '../utils/middlewares.js'
+import { isAdmin,loggedIn } from '../utils/middlewares.js'
 
 const productsRouter = Router()
 productsRouter.use(loggedIn)
@@ -54,7 +54,7 @@ productsRouter.post('/', async (req, res) =>{
     }
 })
 
-productsRouter.post('/create', async (req, res) =>{
+productsRouter.post('/create', isAdmin, async (req, res) =>{
     const {title,code,price,stock,description,thumbnail} = req.body
     try {
         const toAdd = await productModel.create({
@@ -71,7 +71,7 @@ productsRouter.post('/create', async (req, res) =>{
     }
 })
 
-productsRouter.put('/:id', async (req, res) =>{
+productsRouter.put('/:id', isAdmin, async (req, res) =>{
     const { id } = req.params
     try {
         const prod = await productModel.findByIdAndUpdate(id,req.body)
@@ -84,7 +84,7 @@ productsRouter.put('/:id', async (req, res) =>{
     }
 })
 
-productsRouter.delete('/:id', async (req, res) =>{
+productsRouter.delete('/:id', isAdmin, async (req, res) =>{
     const { id } = req.params
     try {
         const prod = await productModel.findByIdAndDelete(id)

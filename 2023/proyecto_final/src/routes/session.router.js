@@ -10,8 +10,7 @@ sessionRouter.post('/register', passport.authenticate('register'),async (req,res
         if (!req.user) {
             return res.status(401).send({ message: `User with email ${req.email} already exists` })
         }
-        req.session.user = user.user_name
-        req.session.user_email = user.email
+        req.session.user = user
         req.session.user_cart = user.cart
         console.log(`Welcome to our app! Your username is ${user.user_name}`)
         res.status(200).redirect('/productActions')
@@ -23,8 +22,7 @@ sessionRouter.post('/register', passport.authenticate('register'),async (req,res
 sessionRouter.post('/login',passport.authenticate('login'), async (req,res) =>{
     const user = req.user
     try {
-        req.session.user = user.user_name
-        req.session.user_email = user.email
+        req.session.user = user
         req.session.user_cart = user.cart
         console.log({ response: 'OK', message: user })
     } catch (error) {
@@ -41,8 +39,7 @@ sessionRouter.get('/githubLogin', passport.authenticate('githubLogin', { scope: 
 sessionRouter.get('/githubCallback', passport.authenticate('githubLogin'), async (req, res) => {
     const user = req.user
     try {
-        req.session.user = user.user_name
-        req.session.user_email = user.email
+        req.session.user = user
         req.session.user_cart = user.cart
         console.log({ response: 'OK', message: user })
     } catch (error) {

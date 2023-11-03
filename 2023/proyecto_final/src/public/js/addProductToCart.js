@@ -54,7 +54,7 @@ const createCart =  async (e) =>{
     currentCart = res.carts
     productIds = []
     currentProducts.innerHTML = null
-    
+    return res
 }
 
 const updateCart =  async (e) =>{
@@ -98,7 +98,6 @@ const renderProducts =  (prods) =>{
 
 const confirmPurchase = async (e) =>{
   e.preventDefault()
-  console.log(currentCart)
   await fetchData([], '/carts/purchase', "POST")
 }
 
@@ -112,7 +111,11 @@ confirmPurchaseBtn.addEventListener('click', async(e) =>{
 })
 
 cartForm.addEventListener('submit', async(e) => {
-  await createCart(e)
+  const res = await createCart(e)
+  if(res.error){
+    console.log(res.error)
+    return
+  }
   socket.emit('createCart')
 
 })
