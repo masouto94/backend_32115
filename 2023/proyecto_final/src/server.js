@@ -87,6 +87,8 @@ app.get('/currentProducts', loggedIn, async (req, res) =>{
 app.get('/cartActions', loggedIn, async (req, res) =>{
     const prods = await productModel.find().lean()
     const carts = await cartModel.findById(req.session.user_cart).lean()
+
+    
     res.status(200).render("cartActions",
     {
         layout: 'main',

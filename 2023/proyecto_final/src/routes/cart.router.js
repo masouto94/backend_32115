@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import {  cartModel } from '../model/Cart.js'
-import { userModel } from '../model/User.js'
+import { ticketModel } from '../model/Ticket.js'
 import {  productModel } from '../model/Product.js'
 import { loggedIn } from '../utils/middlewares.js'
 
@@ -118,9 +118,59 @@ cartRouter.post('/create',  async (req, res) =>{
           
      })
      await cartModel.findByIdAndUpdate(req.session.user_cart, cart)
-     return res.send({carts : cart})
+     return res.send({carts : await cartModel.findById(req.session.user_cart)})
 
 })
+
+cartRouter.post('/purchase',  async (req, res) =>{
+     const cart = await cartModel.findById(req.session.user_cart)
+     //Acá no logro agregar el precio del cart entero
+     // const price=cartModel.aggregate([
+     //      {
+     //      $match: {_id:req.session.user_cart}
+     //      },
+     //      {
+     //      $lookup:{
+     //           from: 'Product',
+     //           localField: "products.prod_id",
+     //           foreignField: "_id",
+     //           as: "res"
+     //      }
+     //      },
+     //      {
+     //      $group: {
+     //           _id:req.session.user_cart, 
+
+     //      }
+     //      },
+     //      {
+     //      $project:{
+     //           subtotal: {
+     //                $multiply:["$products.prod_id.price", "$products.price"]
+     //           },
+     //           price: {
+     //                $sum:"$subtotal"
+     //           },
+     //           price:1
+     //      }
+     //      }
+
+     // ])
+     const price = cart.products.reduce((accumulator, product) => {
+          return accumulator + (product.prod_id.price * product.quantity) 
+          }, 0)
+     const now = Date.now()
+     await ticketModel.create({
+          purchase_datetime:now, 
+          amount:price, 
+          buyer: req.session.user_email
+     })
+     return res.send({
+          carts : await ticketModel.find({"buyer": req.session.user_email})
+     })
+
+})
+
 export {
      cartRouter,
      cartModel
