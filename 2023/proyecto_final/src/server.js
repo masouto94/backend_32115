@@ -10,7 +10,7 @@ import { sessionRouter } from './routes/session.router.js'
 import { initPassport, passport } from './config/passport.js'
 
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
-import {auth,loggedIn} from './utils/middlewares.js'
+import {isAdmin,isUser,loggedIn} from './utils/middlewares.js'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
@@ -87,6 +87,8 @@ app.get('/currentProducts', loggedIn, async (req, res) =>{
 app.get('/cartActions', loggedIn, async (req, res) =>{
     const prods = await productModel.find().lean()
     const carts = await cartModel.findById(req.session.user_cart).lean()
+
+    
     res.status(200).render("cartActions",
     {
         layout: 'main',

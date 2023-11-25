@@ -1,8 +1,11 @@
 <h2>Add product to cart</h2>
 
 <form  id="updateCartForm">
-    <input id="productIdToAdd" type="text" name="productIdToAdd" required placeholder="Cart Object ID">
-    <input id="cartToUpdate" type="text" name="cartToUpdate" required placeholder="Product Object ID">
+
+    <select name="productToModify" id="productToModify">
+    {{#each products}}
+    <option value={{this._id}}>{{this.title}}</option>
+    {{/each}}
     <input id="prodQuantity" type="number" name="prodQuantity" placeholder="Product quantity. Leave blank to add one">
     <input id="updateCart" type="submit" value="Update Cart">
 </form>

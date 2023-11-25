@@ -5,9 +5,14 @@ const addProductBtn = document.querySelector("#addProduct")
 const updateCartForm = document.querySelector("#updateCartForm")
 const currentCarts = document.querySelector("#currentCarts")
 const currentProducts = document.querySelector("#currentProducts")
+const confirmPurchaseBtn = document.querySelector("#confirmPurchase")
 
 let productIds = []
 let currentCart = {products:[]}
+
+const togglePurchaseButton = () => {
+  currentCart.products.length === 0 ? confirmPurchaseBtn.setAttribute('disabled',"") : confirmPurchaseBtn.removeAttribute('disabled',"")
+}
 
 const fetchData = async (data, url, method="GET", contentType="application/json") => {
   return await fetch(url,
@@ -49,7 +54,7 @@ const createCart =  async (e) =>{
     currentCart = res.carts
     productIds = []
     currentProducts.innerHTML = null
-    
+    return res
 }
 
 const updateCart =  async (e) =>{
@@ -76,9 +81,8 @@ const renderCarts =  (cart) =>{
   template += prods
   template += `<h4>Price:${cart.price}</h4></div>`
   currentCarts.innerHTML = template
+  togglePurchaseButton()
 }
-
-
 
 const renderProducts =  (prods) =>{ 
   let box =  `<h3>Products</h3><div class="products">`
@@ -92,13 +96,26 @@ const renderProducts =  (prods) =>{
   currentProducts.innerHTML = `${box}${templates.join('\n')}</div>`
 }
 
+const confirmPurchase = async (e) =>{
+  e.preventDefault()
+  await fetchData([], '/carts/purchase', "POST")
+}
+
 addProductBtn.addEventListener('click', async (e) =>{
   await addProduct(e)
   socket.emit('renderProduct',productIds)
 })
 
+confirmPurchaseBtn.addEventListener('click', async(e) =>{
+  await confirmPurchase(e)
+})
+
 cartForm.addEventListener('submit', async(e) => {
-  await createCart(e)
+  const res = await createCart(e)
+  if(res.error){
+    console.log(res.error)
+    return
+  }
   socket.emit('createCart')
 
 })

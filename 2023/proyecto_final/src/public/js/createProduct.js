@@ -2,7 +2,7 @@ const socket = io()
 socket.emit('greeting','Conectado Realtime en Create')
 
 const fetchData = async (data, url, method="GET", contentType="application/json") => {
-  await fetch(url,
+  return await fetch(url,
   {
       method: method,  
       mode: "cors",  
@@ -31,8 +31,8 @@ const createProduct = (data) =>{
 createProductForm.addEventListener('submit', async (e) => {
   e.preventDefault()
   let output = createProduct(new FormData(createProductForm))
-  console.log(output)
-  await fetchData(output,"/products/create", 'POST')
-  alert(`Created product ${JSON.parse(output).title} successfully`)
+  let result=await fetchData(output,"/products/create", 'POST')
+  console.log(result)
+
   socket.emit('productsModified')
 })
