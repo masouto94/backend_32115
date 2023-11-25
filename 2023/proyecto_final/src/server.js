@@ -1,7 +1,6 @@
 import 'dotenv/config'
 import express from 'express'
 import path from 'path';
-import morgan from 'morgan'
 import handlebars from 'express-handlebars'
 import {fileURLToPath} from 'url';
 import {productModel,productsRouter} from './routes/products.router.js'
@@ -16,6 +15,7 @@ import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
 import session from 'express-session'
+import { addLogger } from './config/logger/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,7 +32,7 @@ app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname+'/views')
 app.set('view engine', 'handlebars')
 
-app.use(morgan('dev'))
+app.use(addLogger)
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'))
@@ -103,6 +103,7 @@ const httpServer = app.listen(PORT,()=>{
 })
 
 app.get('/login',(req, res) =>{
+    req.logger.error('errrrr')
     res.status(200).render("userLogin",
     {
         layout: 'main',
