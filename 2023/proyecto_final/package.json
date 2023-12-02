@@ -2,11 +2,12 @@
   "name": "proyecto_final",
   "version": "1.0.0",
   "description": "Backend Ecommerce para proyecto final de coderhouse",
-  "main": "index.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon ./src/server.js"
+    "server": "nodemon -r dotenv/config src/server.js  dotenv_config_path=.env.production dotenv_config_debug=true",
+    "dev": "nodemon -r dotenv/config src/server.js  dotenv_config_path=.env.development dotenv_config_debug=true"
   },
   "author": "Matias Souto",
   "engines": {

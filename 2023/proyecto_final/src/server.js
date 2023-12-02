@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import express from 'express'
 import path from 'path';
 import handlebars from 'express-handlebars'
@@ -19,7 +18,6 @@ import { addLogger } from './config/logger/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const PORT = process.env.PORT || 8080
 
 const app = express()
