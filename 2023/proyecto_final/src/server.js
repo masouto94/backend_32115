@@ -1,7 +1,5 @@
-import 'dotenv/config'
 import express from 'express'
 import path from 'path';
-import morgan from 'morgan'
 import handlebars from 'express-handlebars'
 import {fileURLToPath} from 'url';
 import {productModel,productsRouter} from './routes/products.router.js'
@@ -11,15 +9,15 @@ import { sessionRouter } from './routes/session.router.js'
 import { initPassport, passport } from './config/passport.js'
 
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
-import {auth,loggedIn} from './utils/middlewares.js'
+import {isAdmin,isUser,loggedIn} from './utils/middlewares.js'
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
 import session from 'express-session'
+import { addLogger } from './config/logger/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const PORT = process.env.PORT || 8080
 
 const app = express()
@@ -32,7 +30,7 @@ app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname+'/views')
 app.set('view engine', 'handlebars')
 
-app.use(morgan('dev'))
+app.use(addLogger)
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'))
@@ -44,7 +42,7 @@ app.use(session({
             useNewUrlParser: true,
             useUnifiedTopology: true
         },
-        ttl: 60
+        ttl: 3600
         }),
         secret: process.env.SESSION_SECRET,
         resave: false, 
@@ -86,14 +84,16 @@ app.get('/currentProducts', loggedIn, async (req, res) =>{
 
 app.get('/cartActions', loggedIn, async (req, res) =>{
     const prods = await productModel.find().lean()
-    const carts = await cartModel.find().lean()
+    const carts = await cartModel.findById(req.session.user_cart).lean()
+
+    
     res.status(200).render("cartActions",
     {
         layout: 'main',
         title: 'Cart actions',
         products: prods,
         addProductHandler: 'addProductToCart',
-        carts: carts
+        carts: [carts]
     })
 })
 
@@ -103,6 +103,7 @@ const httpServer = app.listen(PORT,()=>{
 })
 
 app.get('/login',(req, res) =>{
+    req.logger.error('errrrr')
     res.status(200).render("userLogin",
     {
         layout: 'main',

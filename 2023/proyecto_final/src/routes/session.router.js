@@ -5,12 +5,15 @@ const sessionRouter = Router()
 
 
 sessionRouter.post('/register', passport.authenticate('register'),async (req,res) =>{
+    const user = req.user
     try {
         if (!req.user) {
             return res.status(401).send({ message: `User with email ${req.email} already exists` })
         }
-
-        res.status(200).send({ message: `Welcome to our app! Your username is ${req.user.user_name}` })
+        req.session.user = user
+        req.session.user_cart = user.cart
+        console.log(`Welcome to our app! Your username is ${user.user_name}`)
+        res.status(200).redirect(302,'/productActions')
     } catch (error) {
         res.status(500).send({ message: `Error registering user ${error}` })
     }
@@ -19,12 +22,13 @@ sessionRouter.post('/register', passport.authenticate('register'),async (req,res
 sessionRouter.post('/login',passport.authenticate('login'), async (req,res) =>{
     const user = req.user
     try {
-        req.session.user = user.user_name
+        req.session.user = user
+        req.session.user_cart = user.cart
         console.log({ response: 'OK', message: user })
     } catch (error) {
         console.log({ response: 'Failed to login', message: error })
     }
-    console.log(`Welcome to our app! Your username is ${req.user.user_name}`)
+    console.log(`Welcome to our app! Your username is ${user.user_name}`)
     res.status(200).redirect('/productActions')
 })
 
@@ -34,8 +38,14 @@ sessionRouter.get('/githubLogin', passport.authenticate('githubLogin', { scope: 
 
 sessionRouter.get('/githubCallback', passport.authenticate('githubLogin'), async (req, res) => {
     const user = req.user
-    console.log(user)
-    req.session.user = user.user_name
+    try {
+        req.session.user = user
+        req.session.user_cart = user.cart
+        console.log({ response: 'OK', message: user })
+    } catch (error) {
+        console.log({ response: 'Failed to login', message: error })
+    }
+    console.log(`Welcome to our app! Your username is ${user.user_name}`)
     res.status(200).redirect('/productActions')
 })
 

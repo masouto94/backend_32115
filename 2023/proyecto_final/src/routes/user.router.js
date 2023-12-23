@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { userModel } from "../model/User.js"
+import { cartModel } from "../model/Cart.js"
 
 const userRouter = Router()
 userRouter.get('/', async (req, res) => {
@@ -43,9 +44,12 @@ userRouter.put('/:id', async (req, res) => {
 userRouter.delete('/:id', async (req, res) => {
     const { id } = req.params
     try {
+        const user_cart = await userModel.findById(id,{cart:1})
+        console.log(user_cart)
         const user = await userModel.findByIdAndDelete(id)
         if (user) {
-            res.status(200).send({ response: 'OK', message: `Deleted user ${id}` })
+            await cartModel.findByIdAndDelete(user_cart.cart)
+            res.status(200).send({ response: 'OK', message: `Deleted user ${id} and cart ${user_cart.cart}` })
         } else {
             res.status(404).send({ response: 'Failed to delete user', message:  `User with id: ${id} not Found` })
         }

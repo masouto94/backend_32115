@@ -11,12 +11,19 @@ const storage = multer.diskStorage({
 const upload = multer({storage:storage})
 
 
-const auth = (req, res, next) => {
-    const {email, pass} = req.body
-    if(email === 'admin@adminCoder.com' && pass === 'adminCod3r123' ){
+const isAdmin = async (req, res, next) => {
+    if(req.session.user.role === 'admin' ){
         return next()
     }
-    res.status(401).send('Not Admin')
+    return res.status(401).send({error:'Not Admin'})
+}
+
+const isUser = (req, res, next) => {
+    console.log(req.session.user)
+    if(req.session.user.role === 'user'){
+        return next()
+    }
+    res.status(401).send({error:'Not an user'})
 }
 
 const loggedIn = (req, res, next) => {
@@ -28,6 +35,7 @@ const loggedIn = (req, res, next) => {
 }
 export {
     upload,
-    auth,
+    isAdmin,
+    isUser,
     loggedIn
 }

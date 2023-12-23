@@ -2,11 +2,12 @@
   "name": "proyecto_final",
   "version": "1.0.0",
   "description": "Backend Ecommerce para proyecto final de coderhouse",
-  "main": "index.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon ./src/server.js"
+    "test": "mocha $1 -r dotenv/config dotenv_config_path=.env.development dotenv_config_debug=true",
+    "server": "nodemon -r dotenv/config src/server.js  dotenv_config_path=.env.production dotenv_config_debug=true",
+    "dev": "nodemon -r dotenv/config src/server.js  dotenv_config_path=.env.development dotenv_config_debug=true"
   },
   "author": "Matias Souto",
   "engines": {
@@ -14,8 +15,11 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
     "morgan": "^1.10.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -32,6 +36,7 @@
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
     "session-file-store": "^1.5.0",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "winston": "^3.11.0"
   }
 }
