@@ -3,3 +3,10 @@ error: errrrr
 error: errrrr
 error: errrrr
 debug: GET - /css/main.css - 13:24:39
+debug: GET - / - 14:31:23
+debug: GET - /login - 14:31:23
+error: errrrr
+error: errrrr
+error: errrrr
+debug: GET - /css/main.css - 14:31:23
+debug: GET - /favicon.ico - 14:31:23

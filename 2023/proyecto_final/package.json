@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/Product.test.js",
     "server": "nodemon -r dotenv/config src/server.js  dotenv_config_path=.env.production dotenv_config_debug=true",
     "dev": "nodemon -r dotenv/config src/server.js  dotenv_config_path=.env.development dotenv_config_debug=true"
   },
@@ -15,8 +15,11 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
     "morgan": "^1.10.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
