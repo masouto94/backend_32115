@@ -11,11 +11,11 @@ const storage = multer.diskStorage({
 const upload = multer({storage:storage})
 
 
-const isAdmin = (req, res, next) => {
+const isAdmin = async (req, res, next) => {
     if(req.session.user.role === 'admin' ){
         return next()
     }
-    res.status(401).send({error:'Not Admin'})
+    return res.status(401).send({error:'Not Admin'})
 }
 
 const isUser = (req, res, next) => {

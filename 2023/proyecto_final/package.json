@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "test": "mocha test/Product.test.js",
+    "test": "mocha $1 -r dotenv/config dotenv_config_path=.env.development dotenv_config_debug=true",
     "server": "nodemon -r dotenv/config src/server.js  dotenv_config_path=.env.production dotenv_config_debug=true",
     "dev": "nodemon -r dotenv/config src/server.js  dotenv_config_path=.env.development dotenv_config_debug=true"
   },

@@ -13,7 +13,7 @@ sessionRouter.post('/register', passport.authenticate('register'),async (req,res
         req.session.user = user
         req.session.user_cart = user.cart
         console.log(`Welcome to our app! Your username is ${user.user_name}`)
-        res.status(200).redirect('/productActions')
+        res.status(200).redirect(302,'/productActions')
     } catch (error) {
         res.status(500).send({ message: `Error registering user ${error}` })
     }
