@@ -17,7 +17,7 @@ const customLevelOpt = {
     }
 }
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
     levels:customLevelOpt.levels,
     transports: [
         new winston.transports.Console({

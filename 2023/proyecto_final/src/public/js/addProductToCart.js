@@ -113,7 +113,7 @@ confirmPurchaseBtn.addEventListener('click', async(e) =>{
 cartForm.addEventListener('submit', async(e) => {
   const res = await createCart(e)
   if(res.error){
-    console.log(res.error)
+    console.error(res.error)
     return
   }
   socket.emit('createCart')

@@ -15,7 +15,7 @@ import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
 import session from 'express-session'
-import { addLogger } from './config/logger/logger.js';
+import { addLogger,logger } from './config/logger/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,8 +24,8 @@ const PORT = process.env.PORT || 8080
 const app = express()
 
 mongoose.connect(process.env.MONGO_URL)
-.then(() => console.log('Connected to DB'))
-.catch((e) => console.log(e))
+.then(() => logger.info('Connected to DB'))
+.catch((e) => logger.error(e))
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname+'/views')
@@ -101,11 +101,10 @@ app.get('/cartActions', loggedIn, async (req, res) =>{
 
 
 const httpServer = app.listen(PORT,()=>{
-    console.log(`Connected to port ${PORT}`)
+    logger.info(`Connected to port ${PORT}`)
 })
 
 app.get('/login',(req, res) =>{
-    req.logger.error('errrrr')
     res.status(200).render("userLogin",
     {
         layout: 'main',

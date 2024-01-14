@@ -12,7 +12,6 @@ sessionRouter.post('/register', passport.authenticate('register'),async (req,res
         }
         req.session.user = user
         req.session.user_cart = user.cart
-        console.log(`Welcome to our app! Your username is ${user.user_name}`)
         res.status(200).redirect(302,'/productActions')
     } catch (error) {
         res.status(500).send({ message: `Error registering user ${error}` })
@@ -24,16 +23,14 @@ sessionRouter.post('/login',passport.authenticate('login'), async (req,res) =>{
     try {
         req.session.user = user
         req.session.user_cart = user.cart
-        console.log({ response: 'OK', message: user })
+        req.logger.info({ response: 'Logged in successfully', user: user.user_name, source:"native" })
     } catch (error) {
-        console.log({ response: 'Failed to login', message: error })
+        req.logger.error({ response: 'Failed to login', message: error, user: user.user_name})
     }
-    console.log(`Welcome to our app! Your username is ${user.user_name}`)
     res.status(200).redirect('/productActions')
 })
 
 sessionRouter.get('/githubLogin', passport.authenticate('githubLogin', { scope: ['user:email'] }), async (req, res) => {
-
 })
 
 sessionRouter.get('/githubCallback', passport.authenticate('githubLogin'), async (req, res) => {
@@ -41,23 +38,22 @@ sessionRouter.get('/githubCallback', passport.authenticate('githubLogin'), async
     try {
         req.session.user = user
         req.session.user_cart = user.cart
-        console.log({ response: 'OK', message: user })
+        req.logger.info({ response: 'Logged in successfully', user: user.user_name, source:"github" })
     } catch (error) {
-        console.log({ response: 'Failed to login', message: error })
+        req.logger.error({ response: 'Failed to login', message: error, user: user.user_name})
     }
-    console.log(`Welcome to our app! Your username is ${user.user_name}`)
     res.status(200).redirect('/productActions')
 })
 
 sessionRouter.get('/logout', (req,res) =>{
-    console.log(req.session)
     if(req.session.user){
         const username=req.session.user
         return req.session.destroy(err => {
             if(err){
+                req.logger.error({status:'Logout error', body:err})    
                 return res.json({status:'Logout error', body:err})
             }
-            console.log(`User ${username} logged out`)
+            req.logger.info(`User ${username.user_name} logged out`)
             return res.status(200).redirect('/productActions')
         })
     }

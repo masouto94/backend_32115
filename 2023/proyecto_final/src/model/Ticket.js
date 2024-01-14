@@ -1,5 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
 import paginate from 'mongoose-paginate-v2'
+import { logger } from "../config/logger/logger.js";
 import { isEmail, InvalidEmailError } from "../utils/helpers.js";
 
 const ticketCodeSchema = new Schema({
@@ -37,13 +38,11 @@ ticketSchema.pre('save', async function(){
             throw InvalidEmailError("Buyer must be an email")
         }
         const lastCode= await ticketCodesModel.findOne({})
-        console.log(lastCode)
         this.code = lastCode.code
-        console.log(lastCode.code)
         const newCode = lastCode.code +1
         await ticketCodesModel.findByIdAndUpdate( lastCode._id,{code: newCode})
     } catch(e){
-        console.log(e)
+        logger.error(e)
     }
 })
 ticketSchema.plugin(paginate)

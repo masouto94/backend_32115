@@ -1,5 +1,5 @@
 const socket = io()
-socket.emit('greeting','Conectado Realtime en Create')
+socket.emit('greeting','Websocket connected')
 
 const fetchData = async (data, url, method="GET", contentType="application/json") => {
   return await fetch(url,
@@ -32,7 +32,6 @@ createProductForm.addEventListener('submit', async (e) => {
   e.preventDefault()
   let output = createProduct(new FormData(createProductForm))
   let result=await fetchData(output,"/products/create", 'POST')
-  console.log(result)
 
   socket.emit('productsModified')
 })
