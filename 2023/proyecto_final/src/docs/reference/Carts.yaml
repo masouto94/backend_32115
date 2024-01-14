@@ -1,0 +1,34 @@
+paths:
+  /:
+    get:
+      summary: "Retrieves all carts"
+      tags:
+        - "Carts"
+  /{cid}:
+    get: 
+      summary: "Get cart by its mongo ObjectId"
+      tags:
+        - "Carts"
+    delete:
+      summary: "Deletes cart by its mongo ObjectId"
+      tags:
+        - "Carts"   
+  /{cid}/product/{pid}:
+    put:
+      summary: "Adds product by its `pid` to cart with `cid`. Both are mongo ObjectId"
+      tags:
+        - "Carts"
+    delete:
+      summary: "Deletes product by its `pid` from cart with `cid`. Both are mongo ObjectId"
+      tags:
+        - "Carts"
+  /create:
+    post:
+      summary: "Adds products in `req.body` to current user cart"
+      tags:
+        - "Carts"
+  /purchase:
+    post:
+      summary: "Finished purchase and creates a ticket"
+      tags:
+        - "Carts"

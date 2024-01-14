@@ -1,0 +1,29 @@
+paths:
+  /:
+    get:
+      summary: "Returns product list with pagination"
+      tags:
+        - "Products"
+  /{id}:
+    get:
+      summary: "Returns product by its mongo ObjectId"
+      tags:
+        - "Products"
+    put:
+      summary: "Updates product by its mongo ObjectId with the payload in `req.body`"
+      tags:
+        - "Products"
+    delete:
+      summary: "Deletes product by its mongo ObjectId"
+      tags:
+        - "Products"
+  /create:
+    post:
+      summary: "Creates a new product with data from `req.body`"
+      tags:
+        - "Products"
+  /currentProducts:
+    get:
+      summary: "Returns product list in realtime"
+      tags:
+        - "Products"

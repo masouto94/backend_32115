@@ -15,6 +15,8 @@ import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import MongoStore from 'connect-mongo'
 import session from 'express-session'
+import { specs } from './docs/autodoc.js';
+import swaggerUiExpress from 'swagger-ui-express'
 import { addLogger,logger } from './config/logger/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -59,6 +61,7 @@ app.use('/carts', cartRouter)
 app.use('/users', userRouter)
 app.use('/sessions', sessionRouter)
 app.use('/mocks', mockRouter)
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 app.get('/', loggedIn, (req, res) =>{
     res.status(200).render("index.handlebars")

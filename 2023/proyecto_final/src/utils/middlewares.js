@@ -19,7 +19,6 @@ const isAdmin = async (req, res, next) => {
 }
 
 const isUser = (req, res, next) => {
-    console.log(req.session.user)
     if(req.session.user.role === 'user'){
         return next()
     }
