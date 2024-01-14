@@ -6,6 +6,7 @@ import {productModel,productsRouter} from './routes/products.router.js'
 import {cartModel,cartRouter} from './routes/cart.router.js'
 import { userModel,userRouter } from './routes/user.router.js'
 import { sessionRouter } from './routes/session.router.js'
+import { mockRouter } from './routes/mocks.router.js';
 import { initPassport, passport } from './config/passport.js'
 
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
@@ -57,6 +58,7 @@ app.use('/products', productsRouter)
 app.use('/carts', cartRouter)
 app.use('/users', userRouter)
 app.use('/sessions', sessionRouter)
+app.use('/mocks', mockRouter)
 
 app.get('/', loggedIn, (req, res) =>{
     res.status(200).render("index.handlebars")

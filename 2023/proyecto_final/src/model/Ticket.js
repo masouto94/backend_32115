@@ -1,6 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
 import paginate from 'mongoose-paginate-v2'
-import { isEmail } from "../utils/helpers.js";
+import { isEmail, InvalidEmailError } from "../utils/helpers.js";
 
 const ticketCodeSchema = new Schema({
 
@@ -34,7 +34,7 @@ const ticketSchema = new Schema({
 ticketSchema.pre('save', async function(){
     try{
         if(!isEmail(this.buyer)){
-            throw TypeError("buyer must be an email")
+            throw InvalidEmailError("Buyer must be an email")
         }
         const lastCode= await ticketCodesModel.findOne({})
         console.log(lastCode)

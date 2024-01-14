@@ -1,6 +1,7 @@
 import {Schema, model} from 'mongoose'
 import paginate from 'mongoose-paginate-v2'
 import { cartModel } from './Cart.js'
+import { isUserName, InvalidUserNameError } from '../utils/helpers.js'
 
 const userSchema = new Schema({
     first_name:{
@@ -39,6 +40,9 @@ const userSchema = new Schema({
 userSchema.pre('save', async function(next){
     if(!this.user_name){
         this.user_name = `${this.first_name.toLowerCase()}.${this.last_name.toLowerCase()}`
+        if(!isUserName(this.user_name)){
+            throw InvalidUserNameError(`${this.user_name} is an invalid user name`)
+        }
     }
     const userCart = await cartModel.create({})
     this.cart = userCart._id
