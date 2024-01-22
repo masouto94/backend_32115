@@ -43,7 +43,7 @@ li{
 	grid-template-columns: 150px 150px;
     height: auto;
 }
-.cart, .productBox{
+.cart, .productBox,.ticket{
     display: flex;
     flex-direction: column;
     border-style: solid;
@@ -51,6 +51,7 @@ li{
     width: 6vw;
     text-align: center;
     height: max-content;
+    margin: 1em;
 }
 
 .product > img {

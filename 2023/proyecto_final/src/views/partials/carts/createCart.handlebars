@@ -25,4 +25,17 @@
 </div>
 
 <button id="confirmPurchase">Purchase cart</button>
+<h3>Tickets</h3>
+<div id="currentTickets">
+    {{#each tickets}}
+    {{#with this as |ticket|}}
+    <div class="ticket" id="ticket_{{ticket._id}}">
+        {{#each ticket.products}}
+            <h3>{{this.prod_id.title}}: {{this.quantity}}</h3>
+        {{/each}}
+        <h4>Amount:{{ticket.amount}}</h4>
+    </div>
+    {{/with}}
+    {{/each}}
 
+</div>

@@ -73,6 +73,9 @@ const socketServer = (httpServer, handlers,reemiters) => {
         conn.on('createCart', async (e) =>{
             socket.emit('createCart')
         })
+        conn.on('purchaseCart', async (e) =>{
+            socket.emit('purchaseCart')
+        })
         for (const reemiter of reemiters) {
             conn.on(reemiter.event,  () => {
                 console.log(reemiter.target, reemiter.args)

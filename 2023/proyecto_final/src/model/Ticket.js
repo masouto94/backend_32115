@@ -29,6 +29,22 @@ const ticketSchema = new Schema({
     code:{
         type: Number, 
         default: null
+    },
+    products: {
+        type: [
+            {
+                prod_id: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Product',
+                    required: true
+                },
+                quantity: {
+                    type: Number,
+                    required: true,
+                    default: 1
+                }
+            }
+        ]
     }
 })
 
@@ -44,6 +60,15 @@ ticketSchema.pre('save', async function(){
     } catch(e){
         logger.error(e)
     }
+})
+ticketSchema.pre('findOne', function () {
+    this.populate('products.prod_id','title')
+})
+ticketSchema.pre('find', function () {
+    this.populate('products.prod_id','title')
+})
+ticketSchema.pre('findById', function () {
+    this.populate('products.prod_id','title')
 })
 ticketSchema.plugin(paginate)
 const ticketModel =  model('Ticket', ticketSchema)

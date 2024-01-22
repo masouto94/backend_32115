@@ -18,6 +18,7 @@ import session from 'express-session'
 import { specs } from './docs/autodoc.js';
 import swaggerUiExpress from 'swagger-ui-express'
 import { addLogger,logger } from './config/logger/logger.js';
+import { ticketModel } from './model/Ticket.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -90,15 +91,19 @@ app.get('/currentProducts', loggedIn, async (req, res) =>{
 app.get('/cartActions', loggedIn, async (req, res) =>{
     const prods = await productModel.find().lean()
     const carts = await cartModel.findById(req.session.user_cart).lean()
-
-    
+    carts.price = carts.products.reduce((accumulator, product) => {
+        return accumulator + (product.prod_id.price * product.quantity) 
+        }, 0)
+    const tickets = await ticketModel.find({"buyer": req.session.user.email}).lean()
     res.status(200).render("cartActions",
     {
         layout: 'main',
         title: 'Cart actions',
         products: prods,
         addProductHandler: 'addProductToCart',
-        carts: [carts]
+        carts: [carts],
+        tickets:tickets
+        
     })
 })
 

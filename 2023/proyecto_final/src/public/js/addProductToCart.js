@@ -9,6 +9,8 @@ const confirmPurchaseBtn = document.querySelector("#confirmPurchase")
 
 let productIds = []
 let currentCart = {products:[]}
+let currentTickets = []
+
 
 const togglePurchaseButton = () => {
   currentCart.products.length === 0 ? confirmPurchaseBtn.setAttribute('disabled',"") : confirmPurchaseBtn.removeAttribute('disabled',"")
@@ -57,19 +59,19 @@ const createCart =  async (e) =>{
     return res
 }
 
-const updateCart =  async (e) =>{
-  e.preventDefault()
-  // const productToAdd = document.querySelector("#productIdToAdd").value
-  // const cartToUpdate = document.querySelector("#cartToUpdate").value
-  // const quantity = document.querySelector("#prodQuantity").value
-  // console.log(cartToUpdate,productToAdd)
-  // if(quantity){
-  //   await fetchData({quantity:parseInt(quantity)},`/carts/${cartToUpdate}/product/${productToAdd}`, "PUT")
-  // }
-  // else{
-  //   await fetch(`/carts/${cartToUpdate}/product/${productToAdd}`, {method:"PUT"})
-  // }
-  alert(`Somehow it doesn't work. Please use postman`)
+
+const renderTickets =  (tickets) =>{  
+  let template = `<div class="ticket" id="ticket_${cart._id}">`
+  let prods=``
+  for (const prod of tickets.products) {
+    prods += `<h3>${prod.prod_id.title}: ${prod.quantity}</h3>`
+  }
+  template += prods
+  const price = cart.products.reduce((accumulator, product) => {
+    return accumulator + (product.prod_id.price * product.quantity) 
+    }, 0)
+  template += `<h4>Price:${price}</h4></div>`
+  currentTickets.push(template) 
 }
 
 const renderCarts =  (cart) =>{  
@@ -79,7 +81,10 @@ const renderCarts =  (cart) =>{
     prods += `<h3>${prod.prod_id.title}: ${prod.quantity}</h3>`
   }
   template += prods
-  template += `<h4>Price:${cart.price}</h4></div>`
+  const price = cart.products.reduce((accumulator, product) => {
+    return accumulator + (product.prod_id.price * product.quantity) 
+    }, 0)
+  template += `<h4>Price:${price}</h4></div>`
   currentCarts.innerHTML = template
   togglePurchaseButton()
 }
@@ -99,6 +104,7 @@ const renderProducts =  (prods) =>{
 const confirmPurchase = async (e) =>{
   e.preventDefault()
   await fetchData([], '/carts/purchase', "POST")
+  socket.emit('purchaseCart')
 }
 
 addProductBtn.addEventListener('click', async (e) =>{
@@ -120,6 +126,6 @@ cartForm.addEventListener('submit', async(e) => {
 
 })
 
-updateCartForm.addEventListener('submit', async (e) => await updateCart(e))
 socket.on('createCart', () => renderCarts(currentCart))
+socket.on('purchaseCart', () => renderTickets(currentTickets))
 socket.on('renderProduct', renderProducts)

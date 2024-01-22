@@ -3,6 +3,7 @@ import {  cartModel } from '../model/Cart.js'
 import { ticketModel } from '../model/Ticket.js'
 import {  productModel } from '../model/Product.js'
 import { isUser, loggedIn } from '../utils/middlewares.js'
+import { logger } from '../config/logger/logger.js'
 
 const cartRouter = Router()
 cartRouter.use(loggedIn)
@@ -10,6 +11,8 @@ cartRouter.get('/',  async (req, res) =>{
     const carts = await cartModel.find()
      return res.status(200).send(carts)
 })
+
+
 
 cartRouter.get('/:cid',  async (req, res) =>{
      try {
@@ -124,49 +127,26 @@ cartRouter.post('/create', isUser, async (req, res) =>{
 
 cartRouter.post('/purchase',  isUser, async (req, res) =>{
      const cart = await cartModel.findById(req.session.user_cart)
-     //Acá no logro agregar el precio del cart entero
-     // const price=cartModel.aggregate([
-     //      {
-     //      $match: {_id:req.session.user_cart}
-     //      },
-     //      {
-     //      $lookup:{
-     //           from: 'Product',
-     //           localField: "products.prod_id",
-     //           foreignField: "_id",
-     //           as: "res"
-     //      }
-     //      },
-     //      {
-     //      $group: {
-     //           _id:req.session.user_cart, 
-
-     //      }
-     //      },
-     //      {
-     //      $project:{
-     //           subtotal: {
-     //                $multiply:["$products.prod_id.price", "$products.price"]
-     //           },
-     //           price: {
-     //                $sum:"$subtotal"
-     //           },
-     //           price:1
-     //      }
-     //      }
-
-     // ])
      const price = cart.products.reduce((accumulator, product) => {
           return accumulator + (product.prod_id.price * product.quantity) 
           }, 0)
      const now = Date.now()
+
      await ticketModel.create({
           purchase_datetime:now, 
           amount:price, 
-          buyer: req.session.user.email
+          buyer: req.session.user.email,
+          products:cart.products.map(prod =>{
+               return {prod_id:prod.prod_id,
+               quantity: prod.quantity}
+          })
+     }).then(async r =>{
+          await cart.emptyCart()
+     }).catch(error => {
+          logger.error(error.message)
      })
      return res.send({
-          carts : await ticketModel.find({"buyer": req.session.user.email})
+          tickets : await ticketModel.find({"buyer": req.session.user.email})
      })
 
 })

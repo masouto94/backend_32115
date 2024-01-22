@@ -1,4 +1,3 @@
-import { productSchema } from "./Product.js"
 import { Schema, model } from 'mongoose'
 import paginate from 'mongoose-paginate-v2'
 
@@ -20,6 +19,13 @@ const cartSchema = new Schema({
         ],
         default: function () {
             return [];
+        }
+    }
+},{
+    methods:{
+        async emptyCart(){
+            this.products = []
+            this.save()
         }
     }
 })
