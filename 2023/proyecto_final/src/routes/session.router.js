@@ -42,7 +42,7 @@ sessionRouter.get('/githubCallback', passport.authenticate('githubLogin'), async
     } catch (error) {
         req.logger.error({ response: 'Failed to login', message: error, user: user.user_name})
     }
-    res.status(200).redirect('/productActions')
+    res.status(200).redirect('/')
 })
 
 sessionRouter.get('/logout', (req,res) =>{

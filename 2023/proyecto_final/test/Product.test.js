@@ -6,7 +6,7 @@ import supertest from "supertest";
 import { assert } from "chai";
 
 await mongoose.connect(process.env.MONGO_URL)
-const requester = supertest('http://localhost:8080')
+const requester = supertest(`http://localhost:${process.env.PORT}`)
 
 describe('Product tests', function () {
     before(async() => {

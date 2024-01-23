@@ -6,7 +6,7 @@ import { assert, expect } from "chai";
 import supertest from "supertest";
 
 await mongoose.connect(process.env.MONGO_URL)
-const requester = supertest('http://localhost:8080')
+const requester = supertest(`http://localhost:${process.env.PORT}`)
 
 describe('Cart tests', function () {
     
