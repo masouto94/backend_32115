@@ -35,6 +35,9 @@ const userSchema = new Schema({
     role:{
         type: String,
         default: 'user'
+    },
+    last_login:{
+        type: Date
     }
 })
 userSchema.pre('save', async function(next){

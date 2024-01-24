@@ -8,6 +8,7 @@ import { userModel,userRouter } from './routes/user.router.js'
 import { sessionRouter } from './routes/session.router.js'
 import { mockRouter } from './routes/mocks.router.js';
 import { initPassport, passport } from './config/passport.js'
+import { tasks } from './config/cron/cronTasks.js';
 
 import {socketServer, handlers, reemiters} from './utils/websocket.js'
 import {isAdmin,isUser,loggedIn} from './utils/middlewares.js'
@@ -25,7 +26,6 @@ const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 8080
 
 const app = express()
-
 mongoose.connect(process.env.MONGO_URL)
 .then(() => logger.info('Connected to DB'))
 .catch((e) => logger.error(e))
