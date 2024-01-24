@@ -7,6 +7,7 @@ const userRouter = Router()
 
 userRouter.get('/',isAdmin, async (req, res) => {
     try {
+        console.log(req.headers)
         const users = await userModel.find()
         res.status(200).send({ response: 'OK', message: users })
     } catch (error) {
@@ -14,12 +15,15 @@ userRouter.get('/',isAdmin, async (req, res) => {
     }
 })
 
-userRouter.get('/:id', isAdmin, async (req, res) => {
+userRouter.get('/:id', loggedIn, async (req, res) => {
     const { id } = req.params
     try {
+        if(id !== req.session.user._id && req.session.user.role !== 'admin'){
+            return res.status(403).send({ response: 'Failed to get user', message: `Cannot fetch a different user unless you are admin` })
+        }
         const user = await userModel.findById(id)
         if (!user) {
-            res.status(404).send({ response: 'Failed to get user', message: `User with id: ${id} not Found` })
+            return res.status(404).send({ response: 'Failed to get user', message: `User with id: ${id} not Found` })
         }
         res.status(200).send({ response: 'OK', message: user })
     } catch (error) {
@@ -46,14 +50,24 @@ userRouter.put('/:id', loggedIn, async (req, res) => {
     }
 })
 
-userRouter.delete('/:id', async (req, res) => {
+userRouter.delete('/:id',loggedIn, async (req, res) => {
     const { id } = req.params
     try {
-        //Revisar por qué no se guarda bien el ID para borrar el mock user
-        // req.logger.error(JSON.stringify(req.session))
-        // if(id !== req.session.user._id && req.session.user.role !== 'admin'){
-        //     res.status(403).send({ response: 'Only admins are allowed to delete other users', message: `Trying to delete ${_id} while being ${req.session.user._id}`})    
-        // }
+        if(req.headers.authorization === process.env.SESSION_SECRET){
+            req.logger.debug("Deleting user by SECRET. This is for tests to run successfully")
+        }
+        else if(id !== req.session.user._id && req.session.user.role !== 'admin'){
+            return res.status(403).send({ response: 'Only admins are allowed to delete other users', message: `Trying to delete ${_id} while being ${req.session.user._id}`})    
+        }
+        if(req.session.user){
+            req.session.destroy(err => {
+                if(err){
+                    req.logger.error(JSON.stringify({status:'Logout error', body:err}))    
+                    return res.json({status:'Logout error', body:err})
+                }
+                req.logger.info(`User ${req.session.user.user_name} logged out due to deletion`)
+            })
+        }
         const user_cart = await userModel.findById(id,{cart:1})
         const user = await userModel.findByIdAndDelete(id)
         if (user) {

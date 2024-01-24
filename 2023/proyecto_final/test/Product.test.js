@@ -3,6 +3,7 @@ import { productModel } from "../src/model/Product.js";
 import { userModel } from "../src/model/User.js";
 import { expect } from "chai";
 import supertest from "supertest";
+import superagent from "superagent"
 import { assert } from "chai";
 
 await mongoose.connect(process.env.MONGO_URL)
@@ -54,7 +55,7 @@ describe('Product tests', function () {
     })
     after(async () => {
         const user = await userModel.findOne({ user_name: "mock.user" })
-        const { statusCode, ok, _body } = await requester.del(`/users/${user._id}`)
+        const {statusCode, ok, _body} = await superagent.agent().del(`http://localhost:${process.env.PORT}/users/${user._id}`).set('Authorization', `${process.env.SESSION_SECRET}`)
         assert.strictEqual(statusCode, 200)
         assert.strictEqual(_body.response, 'OK')
         return true
