@@ -20,6 +20,8 @@ import { specs } from './docs/autodoc.js';
 import swaggerUiExpress from 'swagger-ui-express'
 import { addLogger,logger } from './config/logger/logger.js';
 import { ticketModel } from './model/Ticket.js';
+import { Mailer } from './utils/mailer/mailing.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
