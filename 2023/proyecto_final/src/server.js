@@ -107,7 +107,16 @@ app.get('/cartActions', loggedIn, async (req, res) =>{
         
     })
 })
-
+app.get('/userActions', loggedIn, async (req, res) =>{
+    res.status(200).render("userActions",
+    {
+        layout: 'main',
+        title: 'User actions',
+        deleteUsers: 'deleteUsers',
+        admin:req.session.user.role === "admin" ? true : false
+        
+    })
+})
 
 const httpServer = app.listen(PORT,()=>{
     logger.info(`Connected to port ${PORT}`)
