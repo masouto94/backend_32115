@@ -50,6 +50,27 @@ userRouter.put('/:id', loggedIn, async (req, res) => {
     }
 })
 
+
+
+userRouter.delete('/inactiveUsers', async (req, res) => {
+    try {
+        const now = new Date()
+        const monthAgo = new Date(new Date().setDate(now.getDate() - 30));
+        const users = await userModel.find({last_login: {$lte: monthAgo}})
+        if (users) {
+            users.forEach(async user =>{
+                await cartModel.findByIdAndDelete(user.cart)
+                await userModel.findByIdAndDelete(user._id) 
+            })
+            res.status(200).send({ response: 'OK', message: `Deleted all inactive users and carts` })
+        } else {
+            res.status(404).send({ response: 'Error', message:  `No users to delete` })
+        }
+    } catch (error) {
+        res.status(400).send({ response: 'Failed to delete user', message: error })
+    }
+})
+
 userRouter.delete('/:id',loggedIn, async (req, res) => {
     const { id } = req.params
     try {
@@ -80,22 +101,6 @@ userRouter.delete('/:id',loggedIn, async (req, res) => {
         res.status(400).send({ response: 'Failed to delete user', message: error.message })
     }
 })
-
-userRouter.delete('/', isAdmin, async (req, res) => {
-    try {
-        const user_cart = await userModel.findById(id,{cart:1})
-        const user = await userModel.findByIdAndDelete(id)
-        if (user) {
-            await cartModel.findByIdAndDelete(user_cart.cart)
-            res.status(200).send({ response: 'OK', message: `Deleted user ${id} and cart ${user_cart.cart}` })
-        } else {
-            res.status(404).send({ response: 'Failed to delete user', message:  `User with id: ${id} not Found` })
-        }
-    } catch (error) {
-        res.status(400).send({ response: 'Failed to delete user', message: error })
-    }
-})
-
 export {
     userModel,
     userRouter

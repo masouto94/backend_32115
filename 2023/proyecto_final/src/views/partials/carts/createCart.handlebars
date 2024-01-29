@@ -29,7 +29,7 @@
 <div id="currentTickets">
     {{#each tickets}}
     {{#with this as |ticket|}}
-    <div class="ticket" id="ticket_{{ticket._id}}">
+    <div class="tickets" id="ticket_{{ticket._id}}">
         {{#each ticket.products}}
             <h3>{{this.prod_id.title}}: {{this.quantity}}</h3>
         {{/each}}

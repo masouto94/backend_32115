@@ -38,12 +38,19 @@ li{
     margin: 5vh 0;
     width: max-content;
 }
+#currentTickets{
+    display: grid;
+    grid-template-columns: 200px 200px;
+    margin: 5vh 0;
+    width: max-content;
+    
+}
 /* Override properties for this component */
 #currentProducts > .products{
 	grid-template-columns: 150px 150px;
     height: auto;
 }
-.cart, .productBox,.ticket{
+.cart, .productBox,.tickets{
     display: flex;
     flex-direction: column;
     border-style: solid;

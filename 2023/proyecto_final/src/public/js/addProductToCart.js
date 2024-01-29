@@ -6,10 +6,11 @@ const updateCartForm = document.querySelector("#updateCartForm")
 const currentCarts = document.querySelector("#currentCarts")
 const currentProducts = document.querySelector("#currentProducts")
 const confirmPurchaseBtn = document.querySelector("#confirmPurchase")
-
+const ticketContainer = document.querySelector("#currentTickets")
 let productIds = []
 let currentCart = {products:[]}
 let currentTickets = []
+let ticketTemplates = []
 
 
 const togglePurchaseButton = () => {
@@ -60,19 +61,7 @@ const createCart =  async (e) =>{
 }
 
 
-const renderTickets =  (tickets) =>{  
-  let template = `<div class="ticket" id="ticket_${cart._id}">`
-  let prods=``
-  for (const prod of tickets.products) {
-    prods += `<h3>${prod.prod_id.title}: ${prod.quantity}</h3>`
-  }
-  template += prods
-  const price = cart.products.reduce((accumulator, product) => {
-    return accumulator + (product.prod_id.price * product.quantity) 
-    }, 0)
-  template += `<h4>Price:${price}</h4></div>`
-  currentTickets.push(template) 
-}
+
 
 const renderCarts =  (cart) =>{  
   let template = `<div class="cart" id="cart_${cart._id}">`
@@ -100,10 +89,24 @@ const renderProducts =  (prods) =>{
   })
   currentProducts.innerHTML = `${box}${templates.join('\n')}</div>`
 }
+const renderTickets =  (tickets) =>{  
+  for(let ticket of tickets){
+    let template = `<div class="tickets" id="ticket_${ticket._id}">`
+    let prods=``
+    for (const prod of ticket.products) {
+      prods += `<h3>${prod.prod_id.title}: ${prod.quantity}</h3>`
+    }
+    template += prods
+    template += `<h4>Price:${ticket.amount}</h4></div>`
+    ticketTemplates.push(template)
+
+  }
+  ticketContainer.innerHTML = ticketTemplates.join('\n')
+}
 
 const confirmPurchase = async (e) =>{
   e.preventDefault()
-  await fetchData([], '/carts/purchase', "POST")
+  currentTickets = await fetchData([], '/carts/purchase', "POST").then(tickets => tickets.tickets)
   socket.emit('purchaseCart')
 }
 

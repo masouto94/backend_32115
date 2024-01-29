@@ -52,6 +52,7 @@ userSchema.pre('save', async function(next){
     next()
 })
 
+
 userSchema.plugin(paginate)
 const userModel = model('User', userSchema)
 export {
