@@ -3,6 +3,15 @@ import { userModel } from "../model/User.js"
 import {passport} from '../config/passport.js'
 const sessionRouter = Router()
 
+export const deleteSession = (req,res, message) => {
+    req.session.destroy(err => {
+        if(err){
+            req.logger.error(JSON.stringify({status:'Logout error', body:err}))    
+            return res.json({status:'Logout error', body:err})
+        }
+        req.logger.info(message)
+    })
+}
 
 sessionRouter.post('/register', passport.authenticate('register'),async (req,res) =>{
     const user = req.user
@@ -52,14 +61,8 @@ sessionRouter.get('/logout', async (req,res) =>{
     if(req.session.user){
         const username=req.session.user
         await userModel.findByIdAndUpdate(req.session.user._id, {last_login: Date.now()})
-        return req.session.destroy(err => {
-            if(err){
-                req.logger.error(JSON.stringify({status:'Logout error', body:err}))    
-                return res.json({status:'Logout error', body:err})
-            }
-            req.logger.info(`User ${username.user_name} logged out`)
-            return res.status(200).redirect('/login')
-        })
+        deleteSession(req,res,`User ${username.user_name} logged out`)
+        return res.status(200).redirect('/login')
     }
     return res.status(400).send("User not logged in")
 })

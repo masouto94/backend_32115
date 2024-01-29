@@ -2,12 +2,19 @@ import { Router } from "express"
 import { userModel } from "../model/User.js"
 import { cartModel } from "../model/Cart.js"
 import {isAdmin, loggedIn} from  "../utils/middlewares.js"
-
+import { deleteSession } from "./session.router.js"
 const userRouter = Router()
 
+const validateHeaders = (req,res) =>{
+    if(req.headers.authorization === process.env.SESSION_SECRET){
+        req.logger.debug("Deleting user by SECRET. This is for tests to run successfully")
+    }
+    else if(id !== req.session.user._id && req.session.user.role !== 'admin'){
+        return res.status(403).send({ response: 'Only admins are allowed to delete other users', message: `Trying to delete ${_id} while being ${req.session.user._id}`})    
+    }
+}
 userRouter.get('/',isAdmin, async (req, res) => {
     try {
-        console.log(req.headers)
         const users = await userModel.find()
         res.status(200).send({ response: 'OK', message: users })
     } catch (error) {
@@ -62,32 +69,21 @@ userRouter.delete('/inactiveUsers', async (req, res) => {
                 await cartModel.findByIdAndDelete(user.cart)
                 await userModel.findByIdAndDelete(user._id) 
             })
-            res.status(200).send({ response: 'OK', message: `Deleted all inactive users and carts` })
+            return res.status(200).send({ response: 'OK', message: `Deleted all inactive users and carts`, users:users.map(user => user.email) })
         } else {
-            res.status(404).send({ response: 'Error', message:  `No users to delete` })
+            return res.status(404).send({ response: 'Error', message:  `No users to delete` })
         }
     } catch (error) {
-        res.status(400).send({ response: 'Failed to delete user', message: error })
+        return res.status(400).send({ response: 'Failed to delete user', message: error })
     }
 })
 
 userRouter.delete('/:id',loggedIn, async (req, res) => {
     const { id } = req.params
     try {
-        if(req.headers.authorization === process.env.SESSION_SECRET){
-            req.logger.debug("Deleting user by SECRET. This is for tests to run successfully")
-        }
-        else if(id !== req.session.user._id && req.session.user.role !== 'admin'){
-            return res.status(403).send({ response: 'Only admins are allowed to delete other users', message: `Trying to delete ${_id} while being ${req.session.user._id}`})    
-        }
+        validateHeaders(req,res)
         if(req.session.user){
-            req.session.destroy(err => {
-                if(err){
-                    req.logger.error(JSON.stringify({status:'Logout error', body:err}))    
-                    return res.json({status:'Logout error', body:err})
-                }
-                req.logger.info(`User ${req.session.user.user_name} logged out due to deletion`)
-            })
+            deleteSession(req,res,`User ${req.session.user.user_name} logged out due to deletion`)
         }
         const user_cart = await userModel.findById(id,{cart:1})
         const user = await userModel.findByIdAndDelete(id)

@@ -5,7 +5,7 @@ import supertest from "supertest";
 import superagent from "superagent"
 await mongoose.connect(process.env.MONGO_URL)
 
-const requester = supertest(`http://localhost:${process.env.PORT}`)
+const requester = supertest(`${process.env.HOST}`)
 describe('Session tests', function () {
     before(() => {
         this.mockUser = {
@@ -33,7 +33,7 @@ describe('Session tests', function () {
     })
     it('Should delete mock user from db successfully', async () => {
         const user = await userModel.findOne({ user_name: "mock.user" })
-        const { statusCode, ok, _body } = await superagent.agent().del(`http://localhost:${process.env.PORT}/users/${user._id}`).set('Authorization', `${process.env.SESSION_SECRET}`)
+        const { statusCode, ok, _body } = await superagent.agent().del(`${process.env.HOST}/users/${user._id}`).set('Authorization', `${process.env.SESSION_SECRET}`)
         assert.strictEqual(_body.response, 'OK')
         assert.strictEqual(statusCode, 200)
         return true

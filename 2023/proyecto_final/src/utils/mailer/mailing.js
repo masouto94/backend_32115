@@ -29,11 +29,27 @@ class Mailer{
         })
     }
     userInactivityWarning = async (usersList) => {
-        await this.sendEmail("EL TEST <masouto94@gmail.com>",usersList, "Aviso de eliminación de cuenta por inactividad", "<h1>SE VIENE BOCA</h1><div>Ojo que te van a borrar la cuenta en 10 días</div>",true)
+        if(! usersList){
+            return
+        }
+        await this.sendEmail("App admin <masouto94@gmail.com>",usersList, "Advertencia de eliminación de cuenta por inactividad", 
+        `<h1>LOGUEATE</h1>
+        <div>O si no te vamos a borrar la cuenta en <b>10 días</b> por inactividad</div>
+        <div>Accedé a <a href="${process.env.HOST}/login">este enlace</a> para loguearte y prevenirlo</div>
+        `,true)
     }
-    static lele = () => {
-        console.log(this.transporter)
+
+    userDeletionNotification = async (usersList) => {
+        if(! usersList){
+            return
+        }
+        await this.sendEmail("App admin <masouto94@gmail.com>",usersList, "Aviso de eliminación de cuenta por inactividad", 
+        `<h1>TARDE</h1>
+        <div>Te borramos la cuenta y perdiste todo</div>
+        <div>Accedé <a href="${process.env.HOST}/login">este enlace</a> para crear una nueva cuenta </div>
+        `,true)
     }
+
 }
 
 

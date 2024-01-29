@@ -7,7 +7,7 @@ import superagent from "superagent"
 import { assert } from "chai";
 
 await mongoose.connect(process.env.MONGO_URL)
-const requester = supertest(`http://localhost:${process.env.PORT}`)
+const requester = supertest(`${process.env.HOST}`)
 
 describe('Product tests', function () {
     before(async() => {
@@ -47,15 +47,14 @@ describe('Product tests', function () {
         ])
     })
     it('Only admins can modify products', async function () {
-        const res = await productModel.findOne()
-
-        const { statusCode, ok, _body } = await requester.put(`/products/${res._id}`).send({price:2000})
-        console.log(statusCode, ok, _body)
-        // No puedo recuperar el 401 que devuelve el middleware isAdmin
+        const prev = await productModel.findOne({code:0})
+        await requester.put(`/products/${prev._id}`).send({price:2000})
+        const post = await productModel.findOne({code:0})
+        assert.deepEqual(prev,post)
     })
     after(async () => {
         const user = await userModel.findOne({ user_name: "mock.user" })
-        const {statusCode, ok, _body} = await superagent.agent().del(`http://localhost:${process.env.PORT}/users/${user._id}`).set('Authorization', `${process.env.SESSION_SECRET}`)
+        const {statusCode, ok, _body} = await superagent.agent().del(`${process.env.HOST}/users/${user._id}`).set('Authorization', `${process.env.SESSION_SECRET}`)
         assert.strictEqual(statusCode, 200)
         assert.strictEqual(_body.response, 'OK')
         return true

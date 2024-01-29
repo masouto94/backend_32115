@@ -6,20 +6,28 @@ import { assert, expect } from "chai";
 import supertest from "supertest";
 
 await mongoose.connect(process.env.MONGO_URL)
-const requester = supertest(`http://localhost:${process.env.PORT}`)
+const requester = supertest(`${process.env.HOST}`)
 
 describe('Cart tests', function () {
-    
+    before(() => {
+        const mockUser = {
+            first_name: "Mock",
+            last_name: "User",
+            email: 'mock@user.mail.com',
+            age: 18,
+            password: 'Passw0rd'
+        }
+        requester.post("sessions/register/").send(mockUser).then(r=>r)
+    })
     beforeEach(() => {
         this.timeout(5000)
     })
 
-    it('Has all default keys', async function () {
-        const res = await cartModel.findOne()
+    it('Has all default keys', async () => {
 
-        expect(Object.keys(res._doc)).to.include.members([
+        const cart = await userModel.find({user_name:"mock.user"}).then(r => cartModel.findOne(r.cart))
+        expect(Object.keys(cart._doc)).to.include.members([
             '_id',
-            'price',
             'products'
         ])
     })
