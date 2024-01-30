@@ -1,0 +1,29 @@
+paths:
+  /:
+    get:
+      summary: "All users with pagination. Only accessible by admin"
+      tags:
+        - "Users"
+  /{id}:
+    get:
+      summary: "Returns user by its mongo ObjectId"
+      tags:
+        - "Users"
+    put:
+      summary: "Updates User by its mongo ObjectId with the payload in `req.body`. Only admins can change other users by their id"
+      tags:
+        - "Users"
+    delete:
+      summary: "Deletes User by its mongo ObjectId. Only admins can change other users by their id. Will notify with email"
+      tags:
+        - "Users"
+  /current:
+    delete:
+      summary: "Deletes active session user. This is for deleting own account. Will notify with email"
+      tags:
+        - "Users"
+  /inactiveUsers:
+    delete:
+      summary: "Deletes all users whose `last_login` date is prior to 30 days from now (UTC). Will notify with email"
+      tags:
+        - "Users"

@@ -1,6 +1,7 @@
 import {Router} from 'express'
 import {  productModel } from '../model/Product.js'
 import { isAdmin,loggedIn } from '../utils/middlewares.js'
+import { logger } from '../config/logger/logger.js'
 
 const productsRouter = Router()
 productsRouter.use(loggedIn)
@@ -22,6 +23,7 @@ productsRouter.get('/', async (req, res) =>{
         return res.status(200).send(prods)
         
     } catch (error){
+        logger.error(error.message)
         return res.status(400).send({error: error.message})
     }
 })
@@ -36,6 +38,7 @@ productsRouter.get('/:id', async (req, res) =>{
         return res.status(200).send(prods)
         
     } catch (error) {
+        logger.error(error.message)
         return res.status(400).send({error: error})
     }
 })
@@ -50,6 +53,7 @@ productsRouter.post('/', async (req, res) =>{
         return res.status(200).send(prods)
         
     } catch (error) {
+        logger.error(error.message)
         return res.status(400).send({error: error})
     }
 })
@@ -67,6 +71,7 @@ productsRouter.post('/create', isAdmin, async (req, res) =>{
         })
         return res.status(200).send({result:"Success", description:`Added product ${title} with code ${code}`})
     } catch (error) {
+        logger.error(error.message)
         return res.status(400).send({error: error.name, message: error.message, description:`Failed to add product ${title} with code ${code}`})
     }
 })
@@ -80,6 +85,7 @@ productsRouter.put('/:id', isAdmin, async (req, res) =>{
         else
             return res.status(404).send({error: "Product not found", description: `Failed to update product with ID: ${id}. Product does not exist`})
     } catch (error) {
+        logger.error(error.message)
         return res.status(400).send({error: error.name, message: error.message, description:`Failed to update product with ID: ${id}`})
     }
 })
@@ -93,6 +99,7 @@ productsRouter.delete('/:id', isAdmin, async (req, res) =>{
         else
             return res.status(404).send({error: "Product not found", description: `Failed to delete product with ID: ${id}. Product does not exist`})
     } catch (error) {
+        logger.error(error.message)
         return res.status(400).send({error: error.name, message: error.message, description:`Failed to delete product with ID: ${id}`})
     }
 })
@@ -107,7 +114,8 @@ productsRouter.get('/currentProducts', async (req, res) =>{
         const prods = await productModel.find()
         return res.status(200).send(prods)
     } catch (error){
-        return res.status(400).send({error: error})
+        logger.error(error.message)
+        return res.status(400).send({error: error.message})
     }
 })
 export {

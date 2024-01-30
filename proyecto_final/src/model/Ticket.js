@@ -58,7 +58,7 @@ ticketSchema.pre('save', async function(){
         const newCode = lastCode.code +1
         await ticketCodesModel.findByIdAndUpdate( lastCode._id,{code: newCode})
     } catch(e){
-        logger.error(e)
+        logger.error(e.message)
     }
 })
 ticketSchema.pre('findOne', function () {
