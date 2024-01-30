@@ -3,14 +3,18 @@ import { userModel } from "../model/User.js"
 import { cartModel } from "../model/Cart.js"
 import {isAdmin, loggedIn} from  "../utils/middlewares.js"
 import { deleteSession } from "./session.router.js"
+import { ticketModel } from "../model/Ticket.js"
+import { Mailer } from "../utils/mailer/mailing.js"
+
+const mailer = new Mailer()
 const userRouter = Router()
 
-const validateHeaders = (req,res) =>{
+const validateHeaders = (req,res,id,errorMsg) =>{
     if(req.headers.authorization === process.env.SESSION_SECRET){
         req.logger.debug("Deleting user by SECRET. This is for tests to run successfully")
     }
     else if(id !== req.session.user._id && req.session.user.role !== 'admin'){
-        return res.status(403).send({ response: 'Only admins are allowed to delete other users', message: `Trying to delete ${_id} while being ${req.session.user._id}`})    
+        return res.status(403).send({ response: 'Failed', message: errorMsg})    
     }
 }
 userRouter.get('/',isAdmin, async (req, res) => {
@@ -22,12 +26,29 @@ userRouter.get('/',isAdmin, async (req, res) => {
     }
 })
 
+userRouter.delete('/current',loggedIn, async (req, res) => {
+    try {
+        const userName  = req.session.user.user_name
+        const userEmail = req.session.user.email
+        await cartModel.findByIdAndDelete(req.session.user.cart)
+        await ticketModel.deleteMany({buyer: req.session.user.email})
+        await userModel.findByIdAndDelete(req.session.user._id)
+        deleteSession(req,res,`Successfully deleted ${userName} session`)
+        await mailer.sendEmail("App admin <masouto94@gmail.com>",userEmail, "Aviso de eliminación de cuenta", 
+        `<h1>Borraste tu cuenta</h1>
+        <div>Muchas gracias</div>
+        `)
+        res.status(200).send({ response: 'OK', message: `Successfully deleted ${userName}` })
+    } catch (error) {
+        res.status(400).send({  response: 'Failed to get users', message: error  })
+    }
+})
+
 userRouter.get('/:id', loggedIn, async (req, res) => {
     const { id } = req.params
     try {
-        if(id !== req.session.user._id && req.session.user.role !== 'admin'){
-            return res.status(403).send({ response: 'Failed to get user', message: `Cannot fetch a different user unless you are admin` })
-        }
+        validateHeaders(req,res,id,`Cannot fetch a different user unless you are admin`)
+        
         const user = await userModel.findById(id)
         if (!user) {
             return res.status(404).send({ response: 'Failed to get user', message: `User with id: ${id} not Found` })
@@ -67,8 +88,10 @@ userRouter.delete('/inactiveUsers', async (req, res) => {
         if (users) {
             users.forEach(async user =>{
                 await cartModel.findByIdAndDelete(user.cart)
-                await userModel.findByIdAndDelete(user._id) 
+                await ticketModel.deleteMany({buyer: user.email})
+                await userModel.findByIdAndDelete(user._id)
             })
+            await mailer.userDeletionNotification(users.map(user => user.email))
             return res.status(200).send({ response: 'OK', message: `Deleted all inactive users and carts`, users:users.map(user => user.email) })
         } else {
             return res.status(404).send({ response: 'Error', message:  `No users to delete` })
@@ -81,15 +104,12 @@ userRouter.delete('/inactiveUsers', async (req, res) => {
 userRouter.delete('/:id',loggedIn, async (req, res) => {
     const { id } = req.params
     try {
-        validateHeaders(req,res)
-        if(req.session.user){
-            deleteSession(req,res,`User ${req.session.user.user_name} logged out due to deletion`)
-        }
-        const user_cart = await userModel.findById(id,{cart:1})
+        validateHeaders(req,res,id,`Trying to delete ${id} while being ${req.session.user._id}`)
         const user = await userModel.findByIdAndDelete(id)
         if (user) {
-            await cartModel.findByIdAndDelete(user_cart.cart)
-            res.status(200).send({ response: 'OK', message: `Deleted user ${id} and cart ${user_cart.cart}` })
+            await cartModel.findByIdAndDelete(user.cart)
+            await ticketModel.deleteMany({buyer: user.email})
+            res.status(200).send({ response: 'OK', message: `Deleted user ${id}, cart ${user.cart}, and associated tickets` })
         } else {
             res.status(404).send({ response: 'Failed to delete user', message:  `User with id: ${id} not Found` })
         }

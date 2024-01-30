@@ -5,11 +5,12 @@ h1,h2{
     color: #313638;
     font-size:x-large;
 }
+
 form>input{
     width: 10vw;
 }
 form>input[type=submit]{
-    width:5vw;
+    width:max-content;
     
 }
 .multilineForm{

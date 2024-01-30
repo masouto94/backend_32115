@@ -1,7 +1,9 @@
 <div>
     {{>actions}}
     <ul>
+        {{#unless admin}}
         <li>{{>users/deleteAccount}}</li>
+        {{/unless}}
         {{#if admin}}
         <li>{{>users/deleteInactive}}</li>
         <li>{{>users/deleteUserById}}</li>
