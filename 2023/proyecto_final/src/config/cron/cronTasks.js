@@ -1,6 +1,5 @@
 import {schedule} from 'node-cron'
 import { userModel } from '../../model/User.js'
-const logser = () => console.log("SI",Date.now())
 import {Mailer} from '../../utils/mailer/mailing.js'
 
 const mailer = new Mailer()

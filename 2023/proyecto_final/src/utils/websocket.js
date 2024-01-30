@@ -28,19 +28,8 @@ const renderMessageHandler = () => {
 }
 
 
-import {  cartModel } from '../model/Cart.js'
 import {  productModel } from '../model/Product.js'
 
-// const renderCartsServer = async () => {
-//     const carts = await cartModel.find().lean()
-//     return carts
-    
-// }
-
-const renderCartsServer = async () => {
-    return new SocketHandler('createCart', undefined,'createCart',undefined)
-    
-}
 
 const renderProductsServer = async (prods) => {
     let returnData = []
