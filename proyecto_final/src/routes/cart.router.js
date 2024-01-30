@@ -23,6 +23,7 @@ cartRouter.get('/:cid',  async (req, res) =>{
           return res.status(404).send({error: `Cart with ID: ${req.params.cid} not found`})
           
      } catch (error) {
+          logger.error(error.message)
           return res.status(400).send({error: error.name, message: error.message, description:`Failed to fetch cart with ID: ${req.params.cid}`})
      }
  })
@@ -54,6 +55,7 @@ try {
      }
 
      } catch (error) {
+     logger.error(error.message)
      res.status(400).send({error: error.name, message: error.message, description:`Failed to add product with ID: ${pid} to cart ${cid}`})
      }
 })
@@ -86,6 +88,7 @@ cartRouter.delete('/:cid/product/:pid',  async (req, res) =>{
           }
      
           } catch (error) {
+          logger.error(error.message)
           res.status(400).send({error: error.name, message: error.message, description:`Failed to delete product with ID: ${pid} from cart ${cid}`})
           }
      })
@@ -102,6 +105,7 @@ cartRouter.delete('/:cid',  async (req, res) =>{
                res.status(404).send({error: error.name, message: error.message, description:`Cart with ID: ${cid} does not exist`})
           }
           } catch (error) {
+          logger.error(error.message)
           res.status(400).send({error: error.name, message: error.message, description:`Failed to delete products from cart ${cid}`})
           }
      })

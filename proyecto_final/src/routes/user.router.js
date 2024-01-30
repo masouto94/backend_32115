@@ -2,6 +2,7 @@ import { Router } from "express"
 import { userModel } from "../model/User.js"
 import { cartModel } from "../model/Cart.js"
 import {isAdmin, loggedIn} from  "../utils/middlewares.js"
+import { logger } from "../config/logger/logger.js"
 import { deleteSession } from "./session.router.js"
 import { ticketModel } from "../model/Ticket.js"
 import { Mailer } from "../utils/mailer/mailing.js"
@@ -22,6 +23,7 @@ userRouter.get('/',isAdmin, async (req, res) => {
         const users = await userModel.find()
         res.status(200).send({ response: 'OK', message: users })
     } catch (error) {
+        logger.error(error.message)
         res.status(400).send({  response: 'Failed to get users', message: error  })
     }
 })
@@ -40,6 +42,7 @@ userRouter.delete('/current',loggedIn, async (req, res) => {
         `)
         res.status(200).send({ response: 'OK', message: `Successfully deleted ${userName}` })
     } catch (error) {
+        logger.error(error.message)
         res.status(400).send({  response: 'Failed to get users', message: error  })
     }
 })
@@ -55,6 +58,7 @@ userRouter.get('/:id', loggedIn, async (req, res) => {
         }
         res.status(200).send({ response: 'OK', message: user })
     } catch (error) {
+        logger.error(error.message)
         res.status(400).send({ response: 'Failed to get user', message: error })
     }
 })
@@ -74,6 +78,7 @@ userRouter.put('/:id', loggedIn, async (req, res) => {
             res.status(404).send({ response: 'Failed to update user', message:  `User with id: ${id} not Found` })
         }
     } catch (error) {
+        logger.error(error.message)
         res.status(400).send({ response: 'Failed to update user', message: error })
     }
 })
@@ -97,6 +102,7 @@ userRouter.delete('/inactiveUsers', async (req, res) => {
             return res.status(404).send({ response: 'Error', message:  `No users to delete` })
         }
     } catch (error) {
+        logger.error(error.message)
         return res.status(400).send({ response: 'Failed to delete user', message: error })
     }
 })
@@ -114,6 +120,7 @@ userRouter.delete('/:id',loggedIn, async (req, res) => {
             res.status(404).send({ response: 'Failed to delete user', message:  `User with id: ${id} not Found` })
         }
     } catch (error) {
+        logger.error(error.message)
         res.status(400).send({ response: 'Failed to delete user', message: error.message })
     }
 })

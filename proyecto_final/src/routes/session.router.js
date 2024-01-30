@@ -1,6 +1,7 @@
 import { Router } from "express"
 import { userModel } from "../model/User.js"
 import {passport} from '../config/passport.js'
+import { logger } from "../config/logger/logger.js"
 const sessionRouter = Router()
 
 export const deleteSession = (req,res, message) => {
@@ -24,6 +25,7 @@ sessionRouter.post('/register', passport.authenticate('register'),async (req,res
         await userModel.findByIdAndUpdate(user._id, {last_login: Date.now()})
         res.status(200).redirect(302,'/')
     } catch (error) {
+        logger.error(error.message)
         res.status(500).send({ message: `Error registering user ${error}` })
     }
 })
@@ -36,7 +38,7 @@ sessionRouter.post('/login',passport.authenticate('login'), async (req,res) =>{
         await userModel.findByIdAndUpdate(user._id, {last_login: Date.now()})
         req.logger.info(JSON.stringify({ response: 'Logged in successfully', user: user.user_name, source:"native" }))
     } catch (error) {
-        req.logger.error(JSON.stringify({ response: 'Failed to login', message: error, user: user.user_name}))
+        logger.error(JSON.stringify({ response: 'Failed to login', message: error, user: user.user_name}))
     }
     res.status(200).redirect('/')
 })
@@ -52,7 +54,7 @@ sessionRouter.get('/githubCallback', passport.authenticate('githubLogin'), async
         await userModel.findByIdAndUpdate(user._id, {last_login: Date.now()})
         req.logger.info(JSON.stringify({ response: 'Logged in successfully', user: user.user_name, source:"github" }))
     } catch (error) {
-        req.logger.error(JSON.stringify({ response: 'Failed to login', message: error, user: user.user_name}))
+        logger.error(JSON.stringify({ response: 'Failed to login', message: error, user: user.user_name}))
     }
     res.status(200).redirect('/')
 })
